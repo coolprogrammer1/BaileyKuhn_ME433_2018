@@ -17,7 +17,7 @@
 #pragma config OSCIOFNC = OFF // disable secondary osc
 #pragma config FPBDIV = DIV_1 // divide sysclk freq by 1 for peripheral bus clock
 #pragma config FCKSM = CSDCMD // do not enable clock switch
-#pragma config WDTPS = PS1 // use slowest wdt
+#pragma config WDTPS = PS1048576 // use slowest wdt - 1048576 ms?
 #pragma config WINDIS = OFF // wdt no window mode
 #pragma config FWDTEN = OFF // wdt disabled
 #pragma config FWDTWINSZ = WINSZ_25 // wdt window at 25%
@@ -54,7 +54,11 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-
+    TRISBbits.TRISB4 = 1; //make pushbutton pin an input pin
+   
+    TRISAbits.TRISA4 = 0; //make LED pin an output
+    LATAbits.LATA4 = 1; //make LED pin high to start
+    
     __builtin_enable_interrupts();
 
     while(1) {
