@@ -57,21 +57,26 @@ int main() {
     TRISBbits.TRISB4 = 1; //make pushbutton pin an input pin
    
     TRISAbits.TRISA4 = 0; //make LED pin an output
-    LATAbits.LATA4 = 1; //make LED pin high to start
+    LATAbits.LATA4 = 0; //make LED pin low to start
     
     __builtin_enable_interrupts();
 
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk
+        if (PORTBbits.RB4 == 1) {
+            ;
+        }
+        else{
         _CP0_SET_COUNT(0);
         LATAbits.LATA4 = 1; //make LED pin high
-        while(_CP0_GET_COUNT(0) < 12000) { // (5E-3)/(1/24E6) is # core ticks
+        while(_CP0_GET_COUNT() < 12000) { // (5E-3)/(1/24E6) is # core ticks
             ;
         }
         LATAbits.LATA4 = 0; //make LED pin low (off)  
-         while(_CP0_GET_COUNT(0) < 12000) { // wait 5 ms again
+         while(_CP0_GET_COUNT() < 12000) { // wait 5 ms again
             ;
+        }
         }
     }
 }
