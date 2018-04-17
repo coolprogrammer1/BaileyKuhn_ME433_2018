@@ -41,6 +41,7 @@
 */
 
 #define CS LATAbits.LATBA0       // chip select pin
+unsigned short t;
 
 char SPI1_IO(char write){ //function that does generic communication
     SPI1BUF = write;
@@ -51,6 +52,9 @@ char SPI1_IO(char write){ //function that does generic communication
 } 
 
 void setVoltage(char channel, int voltage){
+    //set bit 15 on MCP4912 equal to 0 or 1 for A or B
+    t = a << 15;
+    
 }
 
 
@@ -61,6 +65,8 @@ void initSPI1() { //initialization function
     CS = 1;
     
     RPA1Rbits.RPA1R = 0011; //set pin A1 as SDO pin
+    
+    //On MCP4912 want to set bit 12, 13, 14 = 1 HOW???
     
     //Master - SPI1 - pins are SDI (A1), SCK1 (B15)
     //we manually control CS (A0) as a digital output
@@ -78,8 +84,8 @@ void initSPI1() { //initialization function
 
                             // send a ram set status command.
     CS = 0;                   // enable the ram
-    SPI1_IO(0x01);             // ram write status
-    SPI1_IO(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
+    SPI1_IO(t >> 8);           // ???
+    SPI1_IO(t&0xFF);            // ??
     CS = 1;                   // finish the command
 }
 
