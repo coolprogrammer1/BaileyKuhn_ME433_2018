@@ -42,6 +42,13 @@
 
 #define CS LATAbits.LATBA0       // chip select pin
 
+char SPI1_IO(char write){ //function that does generic communication
+} 
+
+void setVoltage(char channel, int voltage){
+}
+
+
 void initSPI1() { //initialization function
     //set up the chip select pin as an output
     //set CS high
@@ -67,12 +74,6 @@ void initSPI1() { //initialization function
     SPI1_IO(0x01);             // ram write status
     SPI1_IO(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
     CS = 1;                   // finish the command
-}
-
-char SPI1_IO(char write){ //function that does generic communication
-} 
-
-void setVoltage(char channel, int voltage){
 }
 
 int main() {
@@ -102,21 +103,13 @@ int main() {
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk
-        if (PORTBbits.RB4 == 0) {
-            ;
-        }
-        else{
+        
         _CP0_SET_COUNT(0);
-        LATAbits.LATA4 = 1; //make LED pin high
+        //add code
         while(_CP0_GET_COUNT() < 12000) { // (5E-3)/(1/24E6) is # core ticks
             ;
         }
-        _CP0_SET_COUNT(0);
-        LATAbits.LATA4 = 0; //make LED pin low (off)  
-         while(_CP0_GET_COUNT() < 12000) { // wait 5 ms again
-            ;
-        }
-        }
+        
     }
 }
 
