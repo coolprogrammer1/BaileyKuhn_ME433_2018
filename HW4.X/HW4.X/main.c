@@ -40,7 +40,7 @@
 
 */
 
-#define CS LATAbits.LATBA0       // chip select pin
+#define CS LATAbits.LATA0       // chip select pin
 unsigned short t;
 
 char SPI1_IO(char write){ //function that does generic communication
@@ -59,9 +59,13 @@ char SPI1_IO(char write){ //function that does generic communication
 
 void setVoltage(char channel, int voltage){
     //set bit 15 on MCP4912 equal to 0 or 1 for A or B
-    t = a << 15;
+    t = channel << 15;          //move channel to the leftmost bit
+    //essentially we are just manipulating the t variable to get it into the 16
+    //bit variable we want 
     
     
+    SPI1_IO(t >> 8);           // take off last 8
+    SPI1_IO(t&0xFF);            // whole t&0000000011111111 - produces number when both 1
 }
 
 
@@ -71,10 +75,8 @@ void initSPI1() { //initialization function
     TRISAbits.TRISA0 = 0;
     CS = 1;
     
-    RPA1Rbits.RPA1R = 0011; //set pin A1 as SDO pin
-    
-    //On MCP4912 want to set bit 12, 13, 14 = 1 HOW???
-    
+    RPA1Rbits.RPA1R = 0b011; //set pin A1 as SDO pin
+   
     //Master - SPI1 - pins are SDI (A1), SCK1 (B15)
     //we manually control CS (A0) as a digital output
     //since the PIC is just starting, we know that SPI is off. We rely on
@@ -88,12 +90,6 @@ void initSPI1() { //initialization function
     SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
     SPI1CONbits.MSTEN = 1;    // master operation
     SPI1CONbits.ON = 1;       // turn on spi 1
-
-                            // send a ram set status command.
-    CS = 0;                   // enable the ram
-    SPI1_IO(t >> 8);           // take off last 8
-    SPI1_IO(t&0xFF);            // whole t&11111111 - produces number when both 1
-    CS = 1;                   // finish the command
 }
 
 int main() {
