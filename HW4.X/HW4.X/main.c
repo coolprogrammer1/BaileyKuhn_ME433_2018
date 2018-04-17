@@ -51,9 +51,16 @@ char SPI1_IO(char write){ //function that does generic communication
      return SPI1BUF;    
 } 
 
+//sine stuff
+//int i = 0;
+//float f = 512 + 512 * sin((i* 2.0*3.14)/100.0)
+
+//triangle stuff 
+
 void setVoltage(char channel, int voltage){
     //set bit 15 on MCP4912 equal to 0 or 1 for A or B
     t = a << 15;
+    
     
 }
 
@@ -84,8 +91,8 @@ void initSPI1() { //initialization function
 
                             // send a ram set status command.
     CS = 0;                   // enable the ram
-    SPI1_IO(t >> 8);           // ???
-    SPI1_IO(t&0xFF);            // ??
+    SPI1_IO(t >> 8);           // take off last 8
+    SPI1_IO(t&0xFF);            // whole t&11111111 - produces number when both 1
     CS = 1;                   // finish the command
 }
 
@@ -123,7 +130,7 @@ int main() {
         setVoltage(1,512);
         setVoltage(0,512/2);
         
-        while(_CP0_GET_COUNT() < 12000) { // (5E-3)/(1/24E6) is # core ticks
+        while(_CP0_GET_COUNT() < 24000) { // (1E-3)/(1/24E6) is # core ticks
             ;
         }         
     }
