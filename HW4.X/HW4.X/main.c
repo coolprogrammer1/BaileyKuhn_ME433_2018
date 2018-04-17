@@ -60,6 +60,8 @@ void initSPI1() { //initialization function
     TRISAbits.TRISA0 = 0;
     CS = 1;
     
+    RPA1Rbits.RPA1R = 0011; //set pin A1 as SDO pin
+    
     //Master - SPI1 - pins are SDI (A1), SCK1 (B15)
     //we manually control CS (A0) as a digital output
     //since the PIC is just starting, we know that SPI is off. We rely on
@@ -82,7 +84,8 @@ void initSPI1() { //initialization function
 }
 
 int main() {
-
+    initSPI1();             //initialization function
+    
     __builtin_disable_interrupts();
 
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -111,10 +114,14 @@ int main() {
         
         _CP0_SET_COUNT(0);
         //add code
+        setVoltage(1,512);
+        setVoltage(0,512/2);
+        
         while(_CP0_GET_COUNT() < 12000) { // (5E-3)/(1/24E6) is # core ticks
             ;
-        }
-        
+        }         
     }
 }
+                
+        
 
