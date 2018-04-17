@@ -43,6 +43,11 @@
 #define CS LATAbits.LATBA0       // chip select pin
 
 char SPI1_IO(char write){ //function that does generic communication
+    SPI1BUF = write;
+    while(!SPI1STATbits.SPIRBF) {
+       ; //wait to receive the byte
+    }
+     return SPI1BUF;    
 } 
 
 void setVoltage(char channel, int voltage){
