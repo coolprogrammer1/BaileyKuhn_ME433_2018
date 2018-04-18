@@ -62,8 +62,8 @@ void setVoltage(char channel, int voltage){
     t = channel << 15;          //move channel to the leftmost bit
     //essentially we are just manipulating the t variable to get it into the 16
     //bit variable we want 
-    t = t | 0b011100000000000; //making sure bits 14, 13, 12 are set to 1
-    t = t| ((voltage&0b1111111111) << 2); // set voltage with 10 bit number, 
+    t = t | 0b0111000000000000; //making sure bits 14, 13, 12 are set to 1
+    t = t | (voltage&0b1111111111); // set voltage with 10 bit number, 
     
     CS = 0;                       //set CS low when communication beginning 
     SPI1_IO(t >> 8);           // give 16 bit number but take off last 8
@@ -125,8 +125,8 @@ int main() {
         
         _CP0_SET_COUNT(0);
         //add code
-        setVoltage(1,512);
-        setVoltage(0,1024);
+        setVoltage(0,512);
+        setVoltage(1,(512/2));
         
         while(_CP0_GET_COUNT() < 24000) { // (1E-3)/(1/24E6) is # core ticks
             ;
