@@ -2,7 +2,7 @@
 #include<sys/attribs.h>  // __ISR macro
 #include <math.h>
 
-/*
+
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
 #pragma config JTAGEN = OFF // no jtag
@@ -38,7 +38,7 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
-*/
+
 
 #define CS LATAbits.LATA0       // chip select pin
 unsigned short t;
@@ -86,7 +86,7 @@ void initSPI1() { //initialization function
     //setup SPI1
     SPI1CON = 0;              // turn off the spi module and reset it
     SPI1BUF;                  // clear the rx buffer by reading from it
-    SPI1BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+    SPI1BRG = 1000;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
     SPI1STATbits.SPIROV = 0;  // clear the overflow bit
     SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
     SPI1CONbits.MSTEN = 1;    // master operation
