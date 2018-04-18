@@ -62,9 +62,10 @@ void setVoltage(char channel, int voltage){
     t = channel << 15;          //move channel to the leftmost bit
     //essentially we are just manipulating the t variable to get it into the 16
     //bit variable we want 
+    t = t | 0b011100000000000; //making sure bits 14, 13, 12 are set to 1
+    t = t| ((voltage&0b1111111111) << 2); // set voltage with 10 bit number, 
     
-    
-    SPI1_IO(t >> 8);           // take off last 8
+    SPI1_IO(t >> 8);           // give 16 bit number but take off last 8
     SPI1_IO(t&0xFF);            // whole t&0000000011111111 - produces number when both 1
 }
 
@@ -75,7 +76,7 @@ void initSPI1() { //initialization function
     TRISAbits.TRISA0 = 0;
     CS = 1;
     
-    RPA1Rbits.RPA1R = 0b011; //set pin A1 as SDO pin
+    RPA1Rbits.RPA1R = 0b0011; //set pin A1 as SDO pin
    
     //Master - SPI1 - pins are SDI (A1), SCK1 (B15)
     //we manually control CS (A0) as a digital output
