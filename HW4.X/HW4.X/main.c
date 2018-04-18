@@ -42,6 +42,8 @@
 
 #define CS LATAbits.LATA0       // chip select pin
 unsigned short t;
+int i = 0;
+float f = 0.0;
 
 char SPI1_IO(char write){ //function that does generic communication
     SPI1BUF = write;
@@ -51,19 +53,13 @@ char SPI1_IO(char write){ //function that does generic communication
      return SPI1BUF;    
 } 
 
-//sine stuff
-//int i = 0;
-//float f = 512 + 512 * sin((i* 2.0*3.14)/100.0)
-
-//triangle stuff 
-
 void setVoltage(char channel, int voltage){
     //set bit 15 on MCP4912 equal to 0 or 1 for A or B
     t = channel << 15;          //move channel to the leftmost bit
     //essentially we are just manipulating the t variable to get it into the 16
     //bit variable we want 
     t = t | 0b0111000000000000; //making sure bits 14, 13, 12 are set to 1
-    t = t | (voltage&0b1111111111); // set voltage with 10 bit number, 
+    t = t | ((voltage&0b1111111111) << 2); // set voltage with 10 bit number, 
     
     CS = 0;                       //set CS low when communication beginning 
     SPI1_IO(t >> 8);           // give 16 bit number but take off last 8
@@ -125,7 +121,15 @@ int main() {
         
         _CP0_SET_COUNT(0);
         //add code
-        setVoltage(0,512);
+        //10 Hz Sine wave on A
+        //5Hz triangle wave on B
+        
+        
+        //sine stuff
+        f = 512 + 512 * sin((i* 2.0*3.14)/100.0)
+        i++;
+        //triangle stuff 
+        setVoltage(0,f);
         setVoltage(1,(512/2));
         
         while(_CP0_GET_COUNT() < 24000) { // (1E-3)/(1/24E6) is # core ticks
