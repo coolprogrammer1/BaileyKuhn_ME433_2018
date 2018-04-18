@@ -126,7 +126,7 @@ int main() {
         _CP0_SET_COUNT(0);
         //add code
         setVoltage(1,512);
-        setVoltage(0,512/2);
+        setVoltage(0,1024);
         
         while(_CP0_GET_COUNT() < 24000) { // (1E-3)/(1/24E6) is # core ticks
             ;
