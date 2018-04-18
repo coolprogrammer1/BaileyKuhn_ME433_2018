@@ -316,16 +316,28 @@ END GROUP
                 0x9d01f180                _GEN_EXCPT_ADDR = (_ebase_address + 0x180)
 
 .config_BFC00BF0
+                0xbfc00bf0        0x4
  *(.config_BFC00BF0)
+ .config_BFC00BF0
+                0xbfc00bf0        0x4 build/default/production/main.o
 
 .config_BFC00BF4
+                0xbfc00bf4        0x4
  *(.config_BFC00BF4)
+ .config_BFC00BF4
+                0xbfc00bf4        0x4 build/default/production/main.o
 
 .config_BFC00BF8
+                0xbfc00bf8        0x4
  *(.config_BFC00BF8)
+ .config_BFC00BF8
+                0xbfc00bf8        0x4 build/default/production/main.o
 
 .config_BFC00BFC
+                0xbfc00bfc        0x4
  *(.config_BFC00BFC)
+ .config_BFC00BFC
+                0xbfc00bfc        0x4 build/default/production/main.o
                 0xbfc02000                PROVIDE (_DBG_CODE_ADDR, 0xbfc02000)
                 0x00000ff0                PROVIDE (_DBG_CODE_SIZE, 0xff0)
 

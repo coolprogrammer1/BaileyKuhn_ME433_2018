@@ -65,18 +65,19 @@ void setVoltage(char channel, int voltage){
     t = t | 0b011100000000000; //making sure bits 14, 13, 12 are set to 1
     t = t| ((voltage&0b1111111111) << 2); // set voltage with 10 bit number, 
     
+    CS = 0;                       //set CS low when communication beginning 
     SPI1_IO(t >> 8);           // give 16 bit number but take off last 8
     SPI1_IO(t&0xFF);            // whole t&0000000011111111 - produces number when both 1
+    CS = 1;                     //set CS high when communication ending
 }
 
 
 void initSPI1() { //initialization function
-    //set up the chip select pin as an output
-    //set CS high
-    TRISAbits.TRISA0 = 0;
-    CS = 1;
-    
+    TRISAbits.TRISA0 = 0;    //set up the chip select pin as an output
     RPA1Rbits.RPA1R = 0b0011; //set pin A1 as SDO pin
+    CS = 1;     //set CS high (not reading)
+    
+    
    
     //Master - SPI1 - pins are SDI (A1), SCK1 (B15)
     //we manually control CS (A0) as a digital output
