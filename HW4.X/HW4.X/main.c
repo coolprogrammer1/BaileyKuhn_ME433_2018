@@ -44,6 +44,10 @@
 unsigned short t;
 int i = 0;
 float f = 0.0;
+float g = 0.0;
+float k = 0.0;
+int counter = 0;
+float h = 0.0;
 
 char SPI1_IO(char write){ //function that does generic communication
     SPI1BUF = write;
@@ -123,15 +127,27 @@ int main() {
         //add code
         //10 Hz Sine wave on A
         //5Hz triangle wave on B
+        counter = 0;
         
+        while(counter<=1000){
+            g = counter;
+            counter = counter + 1;
+            setVoltage(1,g);
         
-        //sine stuff
-        f = 512 + 512 * sin((i* 2.0*3.14)/100.0)
-        i++;
-        //triangle stuff 
-        setVoltage(0,f);
-        setVoltage(1,(512/2));
+            f = 512 + 512 * sin((i* 2.0*3.14)/100.0);
+            i=i+1;
+            setVoltage(0,f);
+        }
         
+        while(counter > 0){
+            h = 2000-counter;
+            counter = counter + 1;
+            
+            f = 512 + 512 * sin((i* 2.0*3.14)/100.0);
+            i=i+1;
+            setVoltage(0,f);
+        }
+              
         while(_CP0_GET_COUNT() < 24000) { // (1E-3)/(1/24E6) is # core ticks
             ;
         }         
