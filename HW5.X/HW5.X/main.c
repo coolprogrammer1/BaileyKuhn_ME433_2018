@@ -98,12 +98,14 @@ int main() {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk
         
-        if (readi2c(0b10000000)==0) {            //if pin G7 is low, make pin g0 high
+        if (r==0b00000000) {            //if pin G7 is low, make pin g0 high
             writei2c(0x0A, 0b00000001);
+            
             _CP0_SET_COUNT(0);
             LATAbits.LATA4 = 1; //make LED pin high
             while(_CP0_GET_COUNT() < 4800000) { // (2E-3)/(1/24E6) is # core ticks
             ;}
+            
             _CP0_SET_COUNT(0);
             LATAbits.LATA4 = 0; //make LED pin low (off)  
              while(_CP0_GET_COUNT() < 4800000) { // wait 5 ms again
@@ -111,7 +113,8 @@ int main() {
         }
         
         else {
-            writei2c(0x0A, 0b00000000);  
+            writei2c(0x0A, 0b00000000); 
+            
             _CP0_SET_COUNT(0);
             LATAbits.LATA4 = 1; //make LED pin high
             while(_CP0_GET_COUNT() < 4800000) { // (2E-3)/(1/24E6) is # core ticks
@@ -120,7 +123,7 @@ int main() {
             _CP0_SET_COUNT(0);
             LATAbits.LATA4 = 0; //make LED pin low (off)  
             while(_CP0_GET_COUNT() < 4800000) { // wait 5 ms again
-            ;}//else make it low 
+            ;}//else make it low  
         }
     }
 }
