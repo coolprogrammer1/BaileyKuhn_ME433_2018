@@ -124,12 +124,11 @@ int main() {
         // remember the core timer runs at half the sysclk
         
         _CP0_SET_COUNT(0);
-        //add code
         //10 Hz Sine wave on A
         //5Hz triangle wave on B
         counter = 0;
         
-        while(counter<=1000){
+        while(counter <= 100){
             g = counter;
             counter = counter + 1;
             setVoltage(1,g);
@@ -139,9 +138,10 @@ int main() {
             setVoltage(0,f);
         }
         
-        while(counter > 0){
+        while(counter <= 200){
             h = 2000-counter;
             counter = counter + 1;
+            setVoltage(1,h);
             
             f = 512 + 512 * sin((i* 2.0*3.14)/100.0);
             i=i+1;
