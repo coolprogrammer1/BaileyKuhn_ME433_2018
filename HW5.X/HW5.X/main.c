@@ -1,6 +1,7 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
 #include "i2c_master_noint.h"
+unsigned char r;
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -62,6 +63,7 @@ int main() {
     
     __builtin_enable_interrupts();
 
+    initExpander();
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk
@@ -75,6 +77,40 @@ int main() {
          while(_CP0_GET_COUNT() < 48000) { // wait 5 ms again
             ;
         }
-        
+        if (readi2c(0b10000000)==0) {            //if pin G7 is low, make pin g0 high
+            writei2c(0x0A, 0b00000001);
+        }
+        else {
+            writei2c(0x0A, 0b00000000);         //else make it low 
+        }
     }
+}
+
+#define ADDR 0b0100000
+
+void initExpander(){
+    ANSELBbits.ANSB2 = 0;          //making analog pins digital
+    ANSELBbits.ANSB3 = 0;
+    i2c_master_setup();             //turns on i2c pins
+    writei2c(0x00, 0b11110000);     //makes pins either input or output
+    writei2c(0x0A, 0b00001111);     //uses LAT register, turns pins on or off
+}
+
+void writei2c(unsigned char reg, unsigned char val){
+    i2c_master_start();         // make the start bit
+    i2c_master_send(ADDR<1|0);    // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(reg);         // the register to write to
+    i2c_master_send(val);       // the value to put in the register
+    i2c_master_stop();      // make the stop bit
+}
+
+unsigned char readi2c(){
+    i2c_master_start(); // make the start bit
+    i2c_master_send(ADDR<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(0x09); // the register to read from
+    i2c_master_restart(); // make the restart bit
+    i2c_master_send(ADDR<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    r = i2c_master_recv(); // save the value returned
+    i2c_master_ack(1); // make the ack so the slave knows we got it
+    i2c_master_stop(); // make the stop bit
 }
