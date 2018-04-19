@@ -87,7 +87,7 @@ void initSPI1() { //initialization function
     //setup SPI1
     SPI1CON = 0;              // turn off the spi module and reset it
     SPI1BUF;                  // clear the rx buffer by reading from it
-    SPI1BRG = 1000;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+    SPI1BRG = 1;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
     SPI1STATbits.SPIROV = 0;  // clear the overflow bit
     SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
     SPI1CONbits.MSTEN = 1;    // master operation
@@ -128,22 +128,22 @@ int main() {
         //5Hz triangle wave on B
         counter = 0;
         
-        while(counter <= 100){
+        while(counter <= 1000){
             g = counter;
             counter = counter + 1;
             setVoltage(1,g);
         
-            f = 512 + 512 * sin((i* 2.0*3.14)/100.0);
+            f = 512 + 512 * sin((i* 2.0*3.14)/.1);
             i=i+1;
             setVoltage(0,f);
         }
         
-        while(counter <= 200){
+        while(counter <= 2000){
             h = 2000-counter;
             counter = counter + 1;
             setVoltage(1,h);
             
-            f = 512 + 512 * sin((i* 2.0*3.14)/100.0);
+            f = 512 + 512 * sin((i* 2.0*3.14)/.1);
             i=i+1;
             setVoltage(0,f);
         }
