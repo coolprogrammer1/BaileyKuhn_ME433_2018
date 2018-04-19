@@ -133,7 +133,7 @@ int main() {
             counter = counter + 1;
             setVoltage(1,g);
         
-            f = 512 + 512 * sin((i* 2.0*3.14)/5000.0);
+            f = 512 + 512 * sin((i* 2.0*3.14)/1000.0);
             i=i+1;
             setVoltage(0,f);
         }
@@ -143,7 +143,7 @@ int main() {
             counter = counter + 1;
             setVoltage(1,h);
             
-            f = 512 + 512 * sin((i* 2.0*3.14)/5000.0);
+            f = 512 + 512 * sin((i* 2.0*3.14)/1000.0);
             i=i+1;
             setVoltage(0,f);
         }
