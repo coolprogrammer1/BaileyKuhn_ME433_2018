@@ -41,7 +41,7 @@ unsigned char r;
 
 void writei2c(unsigned char reg, unsigned char val){
     i2c_master_start();         // make the start bit
-    i2c_master_send(ADDR<1|0);    // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(ADDR<<1|0);    // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(reg);         // the register to write to
     i2c_master_send(val);       // the value to put in the register
     i2c_master_stop();      // make the stop bit
@@ -57,10 +57,10 @@ void initExpander(){
 
 unsigned char readi2c(){
     i2c_master_start(); // make the start bit
-    i2c_master_send(ADDR<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(ADDR<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(0x09); // the register to read from
     i2c_master_restart(); // make the restart bit
-    i2c_master_send(ADDR<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    i2c_master_send(ADDR<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     r = i2c_master_recv(); // save the value returned
     i2c_master_ack(1); // make the ack so the slave knows we got it
     i2c_master_stop(); // make the stop bit
