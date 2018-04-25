@@ -68,10 +68,14 @@ int main() {
     __builtin_enable_interrupts();
 
     while(1) {
+        //int q = 7;
         //char message[30];
-        //sprintf(message,"Hello World!")
         LCD_drawPixel(50,50,BLUE);
-        LCD_drawChar(60, 60, 'A', MAGENTA, GREEN)
+        LCD_drawChar(60, 60, 'A', MAGENTA, GREEN);
+        char message[30];
+        sprintf(message,"Hello World");
+        LCD_drawString(70, 70, message ,MAGENTA, GREEN);
+               
         
         ;
     }
