@@ -1,7 +1,7 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
 #include<stdio.h>
-#include<ST7735.h>
+#include "ST7735.h"
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -43,7 +43,7 @@ int main() {
     
     SPI1_init();
     LCD_init();
-    LCD_clearScreen(GREEN);
+    LCD_clearScreen(WHITE);
 
     __builtin_disable_interrupts();
 
@@ -69,8 +69,9 @@ int main() {
 
     while(1) {
         //char message[30];
-        
-        //sprintf(message,"Hello world %d!")
+        //sprintf(message,"Hello World!")
+        LCD_drawPixel(50,50,BLUE);
+        LCD_drawChar(60, 60, 'A', MAGENTA, GREEN)
         
         ;
     }

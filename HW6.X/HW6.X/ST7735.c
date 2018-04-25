@@ -248,7 +248,6 @@ void LCD_clearScreen(unsigned short color) {
 	}
 }
 
-
 void LCD_drawChar(unsigned short x, unsigned short y, char* mess, unsigned short color1, unsigned short color2){
     char row = mess - 0x20;     //subtract hex 20 
     int col = 0;
@@ -268,7 +267,7 @@ void LCD_drawChar(unsigned short x, unsigned short y, char* mess, unsigned short
     }
     
 }
-
+/*
 void LCD_drawString(unsigned short x, unsigned short y, char message,unsigned short color1, unsigned short color2){
     int i = 0;
     
@@ -281,3 +280,4 @@ void LCD_drawString(unsigned short x, unsigned short y, char message,unsigned sh
 void LCD_drawProgressBar(unsigned short x, unsigned short y, unsigned short h, unsigned short len1, unsigned short color1, unsigned short len2, unsigned short color2){
     for(x=0;x=len1;x++){}
 }
+ */
