@@ -247,3 +247,24 @@ void LCD_clearScreen(unsigned short color) {
 		LCD_data16(color);
 	}
 }
+
+
+void LCD_drawChar(unsigned short x, unsigned short y, char* mess, unsigned short color1, unsigned short color2){
+    char row = mess - 0x20;     //subtract hex 20 
+    int col = 0;
+    for(col=0;col<5;col++){
+        char pixels = ASCII[row][col];
+        int j = 0;
+        for(j=0;j<8;j++){
+            if(pixels>>j&1 == 1){
+                if(x+col < 128 & y+j <160){
+                LCD_drawPixel(x+col, y+j, color1);
+                }
+            }
+            else {
+                LCD_drawPixel(x+col,y+j, color2);
+            }
+        }
+    }
+    
+}
