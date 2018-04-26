@@ -79,12 +79,14 @@ int main() {
         char message[30];
         sprintf(message,"Hello World! %d    ", q);
         LCD_drawString(28,32, message ,MAGENTA, GREEN);
+        LCD_drawProgressBar(28, 40, 28+q, 28+(100-q), CYAN, RED);
         q++;
         
-        while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
+        
+        /*while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
             ;
         }
-       
+       */
         } 
     }
 }
