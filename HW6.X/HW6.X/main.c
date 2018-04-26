@@ -77,7 +77,7 @@ int main() {
             
         _CP0_SET_COUNT(0);
         char message[30];
-        sprintf(message,"Hello World! %d", q);
+        sprintf(message,"Hello World! %d    ", q);
         LCD_drawString(28,32, message ,MAGENTA, GREEN);
         q++;
         
