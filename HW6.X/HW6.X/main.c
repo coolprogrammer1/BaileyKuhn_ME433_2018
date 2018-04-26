@@ -68,8 +68,11 @@ int main() {
     __builtin_enable_interrupts();
 
     while(1) {
+        _CP0_SET_COUNT(0);
         int q = 0;
-        
+        while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
+            ;
+        }
         while(q<=100){
             
         _CP0_SET_COUNT(0);
@@ -78,11 +81,10 @@ int main() {
         LCD_drawString(28,32, message ,MAGENTA, GREEN);
         q++;
         
-         while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
+        while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
             ;
         }
-        }       
-        
-        ;
+       
+        } 
     }
 }
