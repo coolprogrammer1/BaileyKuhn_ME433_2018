@@ -68,14 +68,20 @@ int main() {
     __builtin_enable_interrupts();
 
     while(1) {
-        //int q = 7;
-        //char message[30];
-        LCD_drawPixel(50,50,BLUE);
-        LCD_drawChar(60, 60, 'A', MAGENTA, GREEN);
+        int q = 0;
+        
+        while(q<=100){
+            
+        _CP0_SET_COUNT(0);
         char message[30];
-        sprintf(message,"Hello World");
-        LCD_drawString(70, 70, message ,MAGENTA, GREEN);
-               
+        sprintf(message,"Hello World! %d", q);
+        LCD_drawString(28,32, message ,MAGENTA, GREEN);
+        q++;
+        
+         while(_CP0_GET_COUNT() < 2400000) { // (.1)/(1/24E6) is # core ticks
+            ;
+        }
+        }       
         
         ;
     }

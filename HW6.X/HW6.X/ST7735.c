@@ -268,11 +268,11 @@ void LCD_drawChar(unsigned short x, unsigned short y, char *mess, unsigned short
     
 }
 
-void LCD_drawString(unsigned short x, unsigned short y, char message,unsigned short color1, unsigned short color2){
+void LCD_drawString(unsigned short x, unsigned short y, char *message,unsigned short color1, unsigned short color2){
     int i = 0;
     
-    while(message[3]){
-        LCD_drawChar(x+5*3, y, message[3],color1, color2);
+    while(message[i]){
+        LCD_drawChar(x+5*i, y, message[i],color1, color2);
         i++;
     }
 }
