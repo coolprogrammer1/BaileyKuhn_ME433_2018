@@ -53,8 +53,6 @@ void initExpander(){
     ANSELBbits.ANSB2 = 0;          //making analog pins digital
     ANSELBbits.ANSB3 = 0;
     i2c_master_setup();             //turns on i2c pins
-    writei2c(0x00, 0b11110000);     //makes pins either input or output
-    writei2c(0x0A, 0b00001111);     //uses LAT register, turns pins on or off
 }
 
 unsigned char readi2c(unsigned char address, unsigned char reg){
@@ -73,7 +71,7 @@ unsigned char readi2c(unsigned char address, unsigned char reg){
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
     i2c_master_send(address<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
-    i2c_master_send(0x09); // the register to read from
+    i2c_master_send(reg); // the register to read from
     i2c_master_restart(); // make the restart bit
     i2c_master_send(address<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     int i;
@@ -117,7 +115,8 @@ int main() {
     __builtin_enable_interrupts();
     SPI1_init();
     LCD_init();
-    LCD_clearScreen(WHITE);
+    LCD_clearScreen(GREEN);
+    
     
     initExpander();
     //write to several registers to initialize chip
@@ -143,12 +142,26 @@ int main() {
             LATAbits.LATA4 = 0; //make LED pin low (off)  
             while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
             ;}
-*/
-        readi2c(ADDR, 0x0F);
+*/      
+        
+        _CP0_SET_COUNT(0);
+        
+        
+         LATAbits.LATA4 = 1; //make LED pin high
+         while(_CP0_GET_COUNT() < 1200000) { // (2E-3)/(1/24E6) is # core ticks
+            ;}
+         
+         _CP0_SET_COUNT(0);
+         LATAbits.LATA4 = 0; //make LED pin low (off)  
+         while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
+            ;}
+        
+        /*
+        r = readi2c(ADDR, 0x0F);
         char message[30];
         sprintf(message,r);
         LCD_drawString(28,32, message, RED, BLUE);
-    
+         */
     
     
     }
