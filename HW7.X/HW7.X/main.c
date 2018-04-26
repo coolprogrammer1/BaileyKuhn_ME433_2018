@@ -1,6 +1,8 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
 #include "i2c_master_noint.h"
+#include "ST7735.h"
+#include<stdio.h>
 unsigned char r;
 #define ADDR 0b1101011
 
@@ -55,12 +57,12 @@ void initExpander(){
     writei2c(0x0A, 0b00001111);     //uses LAT register, turns pins on or off
 }
 
-unsigned char readi2c(){
+unsigned char readi2c(unsigned char address, unsigned char reg){
     i2c_master_start(); // make the start bit
-    i2c_master_send(ADDR<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
-    i2c_master_send(0x09); // the register to read from
+    i2c_master_send(address<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(reg); // the register to read from
     i2c_master_restart(); // make the restart bit
-    i2c_master_send(ADDR<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    i2c_master_send(address<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     r = i2c_master_recv(); // save the value returned
     i2c_master_ack(1); // make the ack so the slave knows we got it
     i2c_master_stop(); // make the stop bit
@@ -75,10 +77,10 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     i2c_master_restart(); // make the restart bit
     i2c_master_send(address<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     int i;
-    unsigned char b[];
+    unsigned char b[14];
     signed short x;
     for(i = 0; i <length; i++){
-        b(i) = i2c_master_recv();
+        b[i] = i2c_master_recv();
         if(i<length-1){
         i2c_master_ack(0);
         }
@@ -113,7 +115,10 @@ int main() {
     LATAbits.LATA4 = 0; //make LED pin low to start
     
     __builtin_enable_interrupts();
-
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(WHITE);
+    
     initExpander();
     //write to several registers to initialize chip
     writei2c(0x10,0b10000010);  //CTRL1_XL turn on accelerometer, 1.66 kHz 2g, 100Hz
@@ -126,7 +131,7 @@ int main() {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk
 
-            
+            /*
             writei2c(0x0A, 0b00000001);
                 
             _CP0_SET_COUNT(0);
@@ -138,6 +143,13 @@ int main() {
             LATAbits.LATA4 = 0; //make LED pin low (off)  
             while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
             ;}
-
+*/
+        readi2c(ADDR, 0x0F);
+        char message[30];
+        sprintf(message,r);
+        LCD_drawString(28,32, message, RED, BLUE);
+    
+    
+    
     }
 }
