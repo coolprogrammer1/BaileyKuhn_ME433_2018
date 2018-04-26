@@ -156,12 +156,11 @@ int main() {
          while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
             ;}
         
-        /*
         r = readi2c(ADDR, 0x0F);
         char message[30];
-        sprintf(message,r);
+        sprintf(message,"r=%d",r);
         LCD_drawString(28,32, message, RED, BLUE);
-         */
+         
     
     
     }
