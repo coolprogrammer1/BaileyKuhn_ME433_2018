@@ -2,7 +2,7 @@
 #include<sys/attribs.h>  // __ISR macro
 #include "i2c_master_noint.h"
 unsigned char r;
-#define ADDR 0b0100000
+#define ADDR 0b1101011
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -70,10 +70,10 @@ unsigned char readi2c(){
 
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
-    i2c_master_send(ADDR<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(address<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
     i2c_master_send(0x09); // the register to read from
     i2c_master_restart(); // make the restart bit
-    i2c_master_send(ADDR<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    i2c_master_send(address<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     int i;
     unsigned char b[];
     signed short x;
@@ -115,6 +115,12 @@ int main() {
     __builtin_enable_interrupts();
 
     initExpander();
+    //write to several registers to initialize chip
+    writei2c(0x10,0b10000010);  //CTRL1_XL turn on accelerometer, 1.66 kHz 2g, 100Hz
+    writei2c(0x11,0b10001000);  //CTRL2_g turn on gyroscope, 1.66 kHz, 1000 dps sensitivity
+    writei2c(0x12,0b00000100);  //CTRL3_C make sure IF_INC bit is 1
+    
+    
     
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
