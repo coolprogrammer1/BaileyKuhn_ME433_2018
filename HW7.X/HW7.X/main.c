@@ -3,6 +3,7 @@
 #include "i2c_master_noint.h"
 #include "ST7735.h"
 #include<stdio.h>
+
 unsigned char r;
 #define ADDR 0b1101011
 
@@ -68,6 +69,9 @@ unsigned char readi2c(unsigned char address, unsigned char reg){
     return r;
 }
 
+unsigned char b[14];
+signed short x;
+    
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
     i2c_master_send(address<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
@@ -75,8 +79,6 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     i2c_master_restart(); // make the restart bit
     i2c_master_send(address<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
     int i;
-    unsigned char b[14];
-    signed short x;
     for(i = 0; i <length; i++){
         b[i] = i2c_master_recv();
         if(i<length-1){
@@ -155,12 +157,17 @@ int main() {
          LATAbits.LATA4 = 0; //make LED pin low (off)  
          while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
             ;}
-        
+        /*
         r = readi2c(ADDR, 0x0F);
         char message[30];
         sprintf(message,"r=%d",r);
         LCD_drawString(28,32, message, RED, BLUE);
+         */
          
+         x = readi2c_multiple(ADDR, 0x20,b,14);
+         char message1[30];
+         sprintf(message1,"x=%d",x);
+         LCD_drawString(28,40,message1,RED,BLUE);
     
     
     }
