@@ -70,7 +70,7 @@ unsigned char readi2c(unsigned char address, unsigned char reg){
 }
 
 unsigned char b[14];
-signed short x;
+signed short temp,xg, yg, zg, xxl, yxl, zxl;
     
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
@@ -89,7 +89,13 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
         }
     }
     i2c_master_stop(); // make the stop bit
-    x = b[0] | (b[1] << 8);
+    temp = b[0] | (b[1] << 8);
+    xg = b[2] | (b[3] << 8);
+    yg = b[4] | (b[5] << 8);
+    zg = b[6] | (b[7] << 8);
+    xxl = b[8] | (b[9] << 8);
+    yxl = b[10] | (b[11] << 8);
+    zxl = b[12] | (b[13] << 8);
 }
 
 int main() {
@@ -164,11 +170,26 @@ int main() {
         LCD_drawString(28,32, message, RED, BLUE);
          */
          
-         x = readi2c_multiple(ADDR, 0x20,b,14);
-         char message1[30];
-         sprintf(message1,"x=%d",x);
-         LCD_drawString(28,40,message1,RED,BLUE);
+         readi2c_multiple(ADDR, 0x20,b,14);
+         char tempmes[30];
+         char xgmes[30];
+         char ygmes[30];
+         char zgmes[30];
+         char xxlmes[30];
+         char yxlmes[30];
+         char zxlmes[30];
+         sprintf(tempmes,"temp=%d",temp);
+         sprintf(xgmes,"xg=%d",xg);
+         sprintf(ygmes,"yg=%d",yg);
+         sprintf(zgmes,"zg=%d",zg);
+         sprintf(xxlmes,"xxl=%d",xxl);
+         sprintf(yxlmes,"yxl=%d",yxl);
+         sprintf(zxlmes,"zxl=%d",zxl);
+         
+         LCD_drawString(28,5,tempmes,RED,BLUE);
+         LCD_drawString(28,13,xxlmes,RED,BLUE);
+         LCD_drawString(28,21,yxlmes,RED,BLUE);
     
-    
+         
     }
 }
