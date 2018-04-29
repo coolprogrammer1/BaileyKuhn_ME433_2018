@@ -6,6 +6,9 @@
 
 unsigned char r;
 #define ADDR 0b1101011
+char tempmes[30];
+char xxlmes[30];
+char yxlmes[30];
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -136,67 +139,50 @@ int main() {
     
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
-        // remember the core timer runs at half the sysclk
-
-            /*
-            writei2c(0x0A, 0b00000001);
-                
-            _CP0_SET_COUNT(0);
-            LATAbits.LATA4 = 1; //make LED pin high
-            while(_CP0_GET_COUNT() < 1200000) { // (2E-3)/(1/24E6) is # core ticks
-            ;}
-            
-            _CP0_SET_COUNT(0);
-            LATAbits.LATA4 = 0; //make LED pin low (off)  
-            while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
-            ;}
-*/      
+        // remember the core timer runs at half the sysclk   
+        readi2c_multiple(ADDR, 0x20,b,14);
+        sprintf(tempmes,"temp=%d",temp);
+        sprintf(xxlmes,"xxl=%d",xxl);
+        sprintf(yxlmes,"yxl=%d",yxl);
+        LCD_drawString(28,5,tempmes,RED,BLUE);
+        LCD_drawString(28,13,xxlmes,RED,BLUE);
+        LCD_drawString(28,21,yxlmes,RED,BLUE);
+    
+        LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
         
         _CP0_SET_COUNT(0);
-        
-        
-         LATAbits.LATA4 = 1; //make LED pin high
+         
          while(_CP0_GET_COUNT() < 1200000) { // (2E-3)/(1/24E6) is # core ticks
-            ;}
-         
-         _CP0_SET_COUNT(0);
-         LATAbits.LATA4 = 0; //make LED pin low (off)  
-         while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
-            ;}
-        /*
-        r = readi2c(ADDR, 0x0F);
-        char message[30];
-        sprintf(message,"r=%d",r);
-        LCD_drawString(28,32, message, RED, BLUE);
-         */
-         
+         LATAbits.LATA4 = 1; //make LED pin high
+         /*
          readi2c_multiple(ADDR, 0x20,b,14);
-         char tempmes[30];
-         char xxlmes[30];
-         char yxlmes[30];
          sprintf(tempmes,"temp=%d",temp);
          sprintf(xxlmes,"xxl=%d",xxl);
          sprintf(yxlmes,"yxl=%d",yxl);
-         
-         /*
-         char xgmes[30];
-         char ygmes[30];
-         char zgmes[30];
-         char zxlmes[30];
-          */
-         
-         /*
-         sprintf(xgmes,"xg=%d",xg);
-         sprintf(ygmes,"yg=%d",yg);
-         sprintf(zgmes,"zg=%d",zg);   
-         sprintf(zxlmes,"zxl=%d",zxl);
-         */
-         
-         
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
          LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
+         */
+         }
+         
+         _CP0_SET_COUNT(0);
+         
+         while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
+         LATAbits.LATA4 = 0; //make LED pin low (off)  
+         /*
+         readi2c_multiple(ADDR, 0x20,b,14);
+         sprintf(tempmes,"temp=%d",temp);
+         sprintf(xxlmes,"xxl=%d",xxl);
+         sprintf(yxlmes,"yxl=%d",yxl);
+         LCD_drawString(28,5,tempmes,RED,BLUE);
+         LCD_drawString(28,13,xxlmes,RED,BLUE);
+         LCD_drawString(28,21,yxlmes,RED,BLUE);
+    
+         LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
+        */
+         }
+         
     }
 }
