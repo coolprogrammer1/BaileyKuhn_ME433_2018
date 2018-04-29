@@ -172,24 +172,31 @@ int main() {
          
          readi2c_multiple(ADDR, 0x20,b,14);
          char tempmes[30];
+         char xxlmes[30];
+         char yxlmes[30];
+         sprintf(tempmes,"temp=%d",temp);
+         sprintf(xxlmes,"xxl=%d",xxl);
+         sprintf(yxlmes,"yxl=%d",yxl);
+         
+         /*
          char xgmes[30];
          char ygmes[30];
          char zgmes[30];
-         char xxlmes[30];
-         char yxlmes[30];
          char zxlmes[30];
-         sprintf(tempmes,"temp=%d",temp);
+          */
+         
+         /*
          sprintf(xgmes,"xg=%d",xg);
          sprintf(ygmes,"yg=%d",yg);
-         sprintf(zgmes,"zg=%d",zg);
-         sprintf(xxlmes,"xxl=%d",xxl);
-         sprintf(yxlmes,"yxl=%d",yxl);
+         sprintf(zgmes,"zg=%d",zg);   
          sprintf(zxlmes,"zxl=%d",zxl);
+         */
+         
          
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
-         
+         LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
     }
 }
