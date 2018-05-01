@@ -278,7 +278,7 @@ void LCD_drawString(unsigned short x, unsigned short y, char *message,unsigned s
 }
 
 void LCD_drawProgressBar(unsigned short x, unsigned short y, signed short len1, unsigned short color1,unsigned short color2){
-    for(x=64;x<=len1 & x>=0;){ //to the right x 
+    for(x=64;x<=len1;){ //to the right
         LCD_drawPixel(x,y, color1);
         LCD_drawPixel(x,y+1, color1);
         LCD_drawPixel(x,y+2, color1);
@@ -298,7 +298,7 @@ void LCD_drawProgressBar(unsigned short x, unsigned short y, signed short len1, 
     
     }
     
-    for(x=64;x<=len1 & x<=0;){ //to the left x
+    for(x=64;x>=len1;){ //to the left x
         LCD_drawPixel(x,y, color1);
         LCD_drawPixel(x,y+1, color1);
         LCD_drawPixel(x,y+2, color1);
@@ -308,7 +308,7 @@ void LCD_drawProgressBar(unsigned short x, unsigned short y, signed short len1, 
         x=x-1;
     }
     
-    for(x=64;x>=len1 & x>=4;x++){
+    for(x=64;x<=len1 & x>=4;x++){
         LCD_drawPixel(x,y, color2);
         LCD_drawPixel(x,y+1, color2);
         LCD_drawPixel(x,y+2, color2);

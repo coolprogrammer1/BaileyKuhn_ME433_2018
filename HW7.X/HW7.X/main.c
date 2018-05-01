@@ -140,21 +140,12 @@ int main() {
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
         // remember the core timer runs at half the sysclk   
-        readi2c_multiple(ADDR, 0x20,b,14);
-        sprintf(tempmes,"temp=%d",temp);
-        sprintf(xxlmes,"xxl=%d",xxl);
-        sprintf(yxlmes,"yxl=%d",yxl);
-        LCD_drawString(28,5,tempmes,RED,BLUE);
-        LCD_drawString(28,13,xxlmes,RED,BLUE);
-        LCD_drawString(28,21,yxlmes,RED,BLUE);
-    
-        LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
         
         _CP0_SET_COUNT(0);
          
          while(_CP0_GET_COUNT() < 1200000) { // (2E-3)/(1/24E6) is # core ticks
          LATAbits.LATA4 = 1; //make LED pin high
-         /*
+         
          readi2c_multiple(ADDR, 0x20,b,14);
          sprintf(tempmes,"temp=%d",temp);
          sprintf(xxlmes,"xxl=%d",xxl);
@@ -164,24 +155,23 @@ int main() {
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
          LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
-         */
          }
          
          _CP0_SET_COUNT(0);
          
          while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
          LATAbits.LATA4 = 0; //make LED pin low (off)  
-         /*
+        
          readi2c_multiple(ADDR, 0x20,b,14);
          sprintf(tempmes,"temp=%d",temp);
-         sprintf(xxlmes,"xxl=%d",xxl);
-         sprintf(yxlmes,"yxl=%d",yxl);
+         sprintf(xxlmes,"xxl=%d",(-1*xxl)/(16000/60));
+         sprintf(yxlmes,"yxl=%d",yxl/(16000/60));
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
          LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
-        */
+  
          }
          
     }
