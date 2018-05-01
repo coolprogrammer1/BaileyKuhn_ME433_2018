@@ -9,6 +9,7 @@ unsigned char r;
 char tempmes[30];
 char xxlmes[30];
 char yxlmes[30];
+char zxlmes[30];
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -73,7 +74,7 @@ unsigned char readi2c(unsigned char address, unsigned char reg){
 }
 
 unsigned char b[14];
-signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2;
+signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
     
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
@@ -101,7 +102,8 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     zxl = b[12] | (b[13] << 8);
     
     xxl2 = -1.0*((xxl)/16000.0)*60.0;
-    yxl2 = -1.0*((yxl)/16000.0)*60.0-60.0;
+    yxl2 = ((yxl)/16000.0)*60.0;
+    zxl2 = ((zxl)/16000.0)*60.0;
 }
 
 int main() {
@@ -150,14 +152,15 @@ int main() {
          LATAbits.LATA4 = 1; //make LED pin high
          
          readi2c_multiple(ADDR, 0x20,b,14);
-         sprintf(tempmes,"temp=%d      ",temp);
-         sprintf(xxlmes,"xxl=%d       ",xxl2);
-         sprintf(yxlmes,"yxl=%d        ",yxl2);
-         LCD_drawString(28,5,tempmes,RED,BLUE);
-         LCD_drawString(28,13,xxlmes,RED,BLUE);
-         LCD_drawString(28,21,yxlmes,RED,BLUE);
-    
-         LCD_drawProgressBar(64,80,xxl2,CYAN,MAGENTA);
+         sprintf(tempmes,"temp=%d   ",temp);
+         sprintf(xxlmes,"xxl=%d    ",xxl2);
+         sprintf(yxlmes,"yxl=%d     ",yxl2);
+         sprintf(zxlmes,"zxl=%d     ",zxl2);
+         LCD_drawString(2,5,tempmes,RED,BLUE);
+         LCD_drawString(2,13,xxlmes,RED,BLUE);
+         LCD_drawString(2,21,yxlmes,RED,BLUE);
+         LCD_drawString(2,29,zxlmes,RED,BLUE);
+         LCD_drawProgressBar(64,80,xxl2,zxl2,CYAN,MAGENTA);
          }
          
          _CP0_SET_COUNT(0);
@@ -166,14 +169,16 @@ int main() {
          LATAbits.LATA4 = 0; //make LED pin low (off)  
         
          readi2c_multiple(ADDR, 0x20,b,14);
-         sprintf(tempmes,"temp=%d      ",temp);
-         sprintf(xxlmes,"xxl=%d       ",xxl2);
-         sprintf(yxlmes,"yxl=%d        ",yxl2);
-         LCD_drawString(28,5,tempmes,RED,BLUE);
-         LCD_drawString(28,13,xxlmes,RED,BLUE);
-         LCD_drawString(28,21,yxlmes,RED,BLUE);
+         sprintf(tempmes,"temp=%d   ",temp);
+         sprintf(xxlmes,"xxl=%d    ",xxl2);
+         sprintf(yxlmes,"yxl=%d     ",yxl2);
+         sprintf(zxlmes,"zxl=%d     ",zxl2);
+         LCD_drawString(2,5,tempmes,RED,BLUE);
+         LCD_drawString(2,13,xxlmes,RED,BLUE);
+         LCD_drawString(2,21,yxlmes,RED,BLUE);
+         LCD_drawString(2,29,zxlmes,RED,BLUE);
     
-         LCD_drawProgressBar(64,80,xxl2,CYAN,MAGENTA);
+         LCD_drawProgressBar(64,80,xxl2,zxl2,CYAN,MAGENTA);
   
          }
          
