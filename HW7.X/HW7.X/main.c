@@ -73,7 +73,7 @@ unsigned char readi2c(unsigned char address, unsigned char reg){
 }
 
 unsigned char b[14];
-signed short temp,xg, yg, zg, xxl, yxl, zxl;
+signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2;
     
 unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigned char * data, int length){
     i2c_master_start(); // make the start bit
@@ -99,6 +99,9 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     xxl = b[8] | (b[9] << 8);
     yxl = b[10] | (b[11] << 8);
     zxl = b[12] | (b[13] << 8);
+    
+    xxl2 = -1.0*((xxl)/16000.0)*60.0;
+    yxl2 = -1.0*((yxl)/16000.0)*60.0;
 }
 
 int main() {
@@ -147,14 +150,14 @@ int main() {
          LATAbits.LATA4 = 1; //make LED pin high
          
          readi2c_multiple(ADDR, 0x20,b,14);
-         sprintf(tempmes,"temp=%d",temp);
-         sprintf(xxlmes,"xxl=%d",xxl);
-         sprintf(yxlmes,"yxl=%d",yxl);
+         sprintf(tempmes,"temp=%d      ",temp);
+         sprintf(xxlmes,"xxl=%d        ",xxl2);
+         sprintf(yxlmes,"yxl=%d        ",yxl2);
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
-         LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
+         LCD_drawProgressBar(64,80,xxl2,CYAN,MAGENTA);
          }
          
          _CP0_SET_COUNT(0);
@@ -163,14 +166,14 @@ int main() {
          LATAbits.LATA4 = 0; //make LED pin low (off)  
         
          readi2c_multiple(ADDR, 0x20,b,14);
-         sprintf(tempmes,"temp=%d",temp);
-         sprintf(xxlmes,"xxl=%d",(-1*xxl)/(16000/60));
-         sprintf(yxlmes,"yxl=%d",yxl/(16000/60));
+         sprintf(tempmes,"temp=%d      ",temp);
+         sprintf(xxlmes,"xxl=%d        ",xxl2);
+         sprintf(yxlmes,"yxl=%d        ",yxl2);
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
          LCD_drawString(28,21,yxlmes,RED,BLUE);
     
-         LCD_drawProgressBar(64,80,xxl,CYAN,MAGENTA);
+         LCD_drawProgressBar(64,80,xxl2,CYAN,MAGENTA);
   
          }
          
