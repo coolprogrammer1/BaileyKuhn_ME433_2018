@@ -54,6 +54,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
+#include "i2c_master_noint.h"
+#include "ST7735.h"
+#include<stdio.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -112,6 +115,15 @@ APP_DATA appData;
     See prototype in app.h.
  */
 
+//define some things
+char tempmes[30];
+char xxlmes[30];
+char yxlmes[30];
+char zxlmes[30];
+#define ADDR 0b1101011
+unsigned char b[14];
+signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
+
 void APP_Initialize ( void )
 {
     /* Place the App state machine in its initial state. */
@@ -120,6 +132,18 @@ void APP_Initialize ( void )
     TRISBbits.TRISB4 = 1; //make pushbutton pin an input pin
     TRISAbits.TRISA4 = 0; //make LED pin an output
     LATAbits.LATA4 = 1; //make LED pin low to start
+    
+    
+
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(GREEN);
+    initExpander();
+    //write to several registers to initialize chip
+    writei2c(0x10,0b10000010);  //CTRL1_XL turn on accelerometer, 1.66 kHz 2g, 100Hz
+    writei2c(0x11,0b10001000);  //CTRL2_g turn on gyroscope, 1.66 kHz, 1000 dps sensitivity
+    writei2c(0x12,0b00000100);  //CTRL3_C make sure IF_INC bit is 1
+    
     /* TODO: Initialize your application's state machine and other
      * parameters.
      */
@@ -157,22 +181,42 @@ void APP_Tasks ( void )
         case APP_STATE_SERVICE_TASKS:
         {
             
-            if (PORTBbits.RB4 == 0) {
-            ;
+            _CP0_SET_COUNT(0);
+         
+            while(_CP0_GET_COUNT() < 1200000) { // (2E-3)/(1/24E6) is # core ticks
+            LATAbits.LATA4 = 1; //make LED pin high
+         
+            readi2c_multiple(ADDR, 0x20,b,14);
+            sprintf(tempmes,"temp=%d   ",temp);
+            sprintf(xxlmes,"xxl=%d    ",xxl2);
+            sprintf(yxlmes,"yxl=%d     ",yxl2);
+            sprintf(zxlmes,"zxl=%d     ",zxl2);
+            LCD_drawString(2,5,tempmes,RED,BLUE);
+            LCD_drawString(2,13,xxlmes,RED,BLUE);
+            LCD_drawString(2,21,yxlmes,RED,BLUE);
+            LCD_drawString(2,29,zxlmes,RED,BLUE);
+            
+            LCD_drawProgressBar(64,80,xxl2,zxl2,CYAN,MAGENTA);
             }
+         
+            _CP0_SET_COUNT(0);
+         
+            while(_CP0_GET_COUNT() < 1200000) { // wait 5 ms again
+            LATAbits.LATA4 = 0; //make LED pin low (off)  
         
-            else{
-                _CP0_SET_COUNT(0);
-                LATAbits.LATA4 = 1; //make LED pin high
-                while(_CP0_GET_COUNT() < 120000) { // (5E-3)/(1/24E6) is # core ticks
-                    ;
-                }
-                _CP0_SET_COUNT(0);
-                LATAbits.LATA4 = 0; //make LED pin low (off)  
-                while(_CP0_GET_COUNT() < 120000) { // wait 5 ms again
-                    ;
-                }
-            }
+            readi2c_multiple(ADDR, 0x20,b,14);
+            sprintf(tempmes,"temp=%d   ",temp);
+            sprintf(xxlmes,"xxl=%d    ",xxl2);
+            sprintf(yxlmes,"yxl=%d     ",yxl2);
+            sprintf(zxlmes,"zxl=%d     ",zxl2);
+            LCD_drawString(2,5,tempmes,RED,BLUE);
+            LCD_drawString(2,13,xxlmes,RED,BLUE);
+            LCD_drawString(2,21,yxlmes,RED,BLUE);
+            LCD_drawString(2,29,zxlmes,RED,BLUE);
+    
+            LCD_drawProgressBar(64,80,xxl2,zxl2,CYAN,MAGENTA);
+  
+         }
             
             break;
         }
