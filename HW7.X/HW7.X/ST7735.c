@@ -277,46 +277,87 @@ void LCD_drawString(unsigned short x, unsigned short y, char *message,unsigned s
     }
 }
 
-void LCD_drawProgressBar(unsigned short x, unsigned short y, signed short len1, unsigned short color1,unsigned short color2){
-    for(x=64;x<=len1+64;){ //to the right
-        LCD_drawPixel(x,y, color1);
-        LCD_drawPixel(x,y+1, color1);
-        LCD_drawPixel(x,y+2, color1);
-        LCD_drawPixel(x,y+3, color1);
-        LCD_drawPixel(x,y+4, color1);
-        LCD_drawPixel(x,y+5, color1);
+void LCD_drawProgressBar(unsigned short x, unsigned short y, signed short len1, signed short len2, unsigned short color1,unsigned short color2){
+    for(x=64;x<=len1+64;){ //to the right (pos)
+        LCD_drawPixel(x,80, color1);
+        LCD_drawPixel(x,81, color1);
+        LCD_drawPixel(x,82, color1);
+        LCD_drawPixel(x,83, color1);
+        LCD_drawPixel(x,84, color1);
+        LCD_drawPixel(x,85, color1);
         x=x+1;
     }
     
     for(x=64;x>=len1+64 & x<=124;x++){
-        LCD_drawPixel(x,y, color2);
-        LCD_drawPixel(x,y+1, color2);
-        LCD_drawPixel(x,y+2, color2);
-        LCD_drawPixel(x,y+3, color2);
-        LCD_drawPixel(x,y+4, color2);
-        LCD_drawPixel(x,y+5, color2);
+        LCD_drawPixel(x,80, color2);
+        LCD_drawPixel(x,81, color2);
+        LCD_drawPixel(x,82, color2);
+        LCD_drawPixel(x,83, color2);
+        LCD_drawPixel(x,84, color2);
+        LCD_drawPixel(x,85, color2);
     
     }
     
-    for(x=64;x>=len1+64;){ //to the left x
-        LCD_drawPixel(x,y, color1);
-        LCD_drawPixel(x,y+1, color1);
-        LCD_drawPixel(x,y+2, color1);
-        LCD_drawPixel(x,y+3, color1);
-        LCD_drawPixel(x,y+4, color1);
-        LCD_drawPixel(x,y+5, color1);
+    for(x=64;x>=len1+64;){ //to the left x (neg))
+        LCD_drawPixel(x,80, color1);
+        LCD_drawPixel(x,81, color1);
+        LCD_drawPixel(x,82, color1);
+        LCD_drawPixel(x,83, color1);
+        LCD_drawPixel(x,84, color1);
+        LCD_drawPixel(x,85, color1);
         x=x-1;
     }
     
     for(x=64;x<=len1+64 & x>=4;x--){
-        LCD_drawPixel(x,y, color2);
-        LCD_drawPixel(x,y+1, color2);
-        LCD_drawPixel(x,y+2, color2);
-        LCD_drawPixel(x,y+3, color2);
-        LCD_drawPixel(x,y+4, color2);
-        LCD_drawPixel(x,y+5, color2);
+        LCD_drawPixel(x,80, color2);
+        LCD_drawPixel(x,81, color2);
+        LCD_drawPixel(x,82, color2);
+        LCD_drawPixel(x,83, color2);
+        LCD_drawPixel(x,84, color2);
+        LCD_drawPixel(x,85, color2);
     
     }
+    
+    for(y=80;y<=len2+80;){ //to the bottom (pos))
+        LCD_drawPixel(62,y, color1);
+        LCD_drawPixel(63,y, color1);
+        LCD_drawPixel(64,y, color1);
+        LCD_drawPixel(65,y, color1);
+        LCD_drawPixel(66,y, color1);
+        LCD_drawPixel(67,y, color1);
+        y=y+1;
+    }
+    
+    for(y=80;y>=len2+80 & y<=140;y++){
+        LCD_drawPixel(62,y, color2);
+        LCD_drawPixel(63,y, color2);
+        LCD_drawPixel(64,y, color2);
+        LCD_drawPixel(65,y, color2);
+        LCD_drawPixel(66,y, color2);
+        LCD_drawPixel(67,y, color2);
+    
+    }
+    
+    for(y=80;y>=len2+80;){ //to the top (neg))
+        LCD_drawPixel(62,y, color1);
+        LCD_drawPixel(63,y, color1);
+        LCD_drawPixel(64,y, color1);
+        LCD_drawPixel(65,y, color1);
+        LCD_drawPixel(66,y, color1);
+        LCD_drawPixel(67,y, color1);
+        y=y-1;
+    }
+    
+    for(y=80;y<=len2+80 & y>=20;y--){
+        LCD_drawPixel(62,y, color2);
+        LCD_drawPixel(63,y, color2);
+        LCD_drawPixel(64,y, color2);
+        LCD_drawPixel(65,y, color2);
+        LCD_drawPixel(66,y, color2);
+        LCD_drawPixel(67,y, color2);
+    
+    }
+    
     
     }
     

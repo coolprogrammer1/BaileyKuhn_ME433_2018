@@ -101,7 +101,7 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     zxl = b[12] | (b[13] << 8);
     
     xxl2 = -1.0*((xxl)/16000.0)*60.0;
-    yxl2 = -1.0*((yxl)/16000.0)*60.0;
+    yxl2 = -1.0*((yxl)/16000.0)*60.0-60.0;
 }
 
 int main() {
@@ -151,7 +151,7 @@ int main() {
          
          readi2c_multiple(ADDR, 0x20,b,14);
          sprintf(tempmes,"temp=%d      ",temp);
-         sprintf(xxlmes,"xxl=%d        ",xxl2);
+         sprintf(xxlmes,"xxl=%d       ",xxl2);
          sprintf(yxlmes,"yxl=%d        ",yxl2);
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
@@ -167,7 +167,7 @@ int main() {
         
          readi2c_multiple(ADDR, 0x20,b,14);
          sprintf(tempmes,"temp=%d      ",temp);
-         sprintf(xxlmes,"xxl=%d        ",xxl2);
+         sprintf(xxlmes,"xxl=%d       ",xxl2);
          sprintf(yxlmes,"yxl=%d        ",yxl2);
          LCD_drawString(28,5,tempmes,RED,BLUE);
          LCD_drawString(28,13,xxlmes,RED,BLUE);
