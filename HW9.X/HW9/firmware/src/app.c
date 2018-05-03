@@ -465,7 +465,7 @@ void APP_Tasks(void) {
 
             if(set == 1){
             len1 = sprintf(dataOut, "%d    %d    %d    %d    %d    %d    %d  \r\n", i,xxl,yxl,zxl,xg,yg,zg);
-            
+            set = 0;
             }
             i++;
             
