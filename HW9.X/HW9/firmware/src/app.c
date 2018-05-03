@@ -51,6 +51,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include <stdio.h>
 #include <xc.h>
+#include "i2c_master_noint.h"
+#include "ST7735.h"
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -62,6 +65,15 @@ uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
 int startTime = 0;
+
+//define some things
+char tempmes[30];
+char xxlmes[30];
+char yxlmes[30];
+char zxlmes[30];
+#define ADDR 0b1101011
+unsigned char b[14];
+signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
 
 // *****************************************************************************
 /* Application Data
@@ -330,6 +342,24 @@ void APP_Initialize(void) {
 
     /* Set up the read buffer */
     appData.readBuffer = &readBuffer[0];
+    
+    appData.state = APP_STATE_INIT;
+    
+    
+//MY STUFF
+    TRISBbits.TRISB4 = 1; //make pushbutton pin an input pin
+    TRISAbits.TRISA4 = 0; //make LED pin an output
+    LATAbits.LATA4 = 1; //make LED pin low to start
+    
+   //initializing other stuff
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(GREEN);
+    initExpander();
+    //write to several registers to initialize chip
+    writei2c(0x10,0b10000010);  //CTRL1_XL turn on accelerometer, 1.66 kHz 2g, 100Hz
+    writei2c(0x11,0b10001000);  //CTRL2_g turn on gyroscope, 1.66 kHz, 1000 dps sensitivity
+    writei2c(0x12,0b00000100);  //CTRL3_C make sure IF_INC bit is 1
 
     startTime = _CP0_GET_COUNT();
 }
