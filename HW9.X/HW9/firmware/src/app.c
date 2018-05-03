@@ -63,11 +63,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i = 0;
+int len1, len2, len3, len4, len5, len6, len7, i = 0;
 int startTime = 0;
 
 //define some things
 char tempmes[30];
+char xgmes[30];
+char ygmes[30];
+char zgmes[30];
 char xxlmes[30];
 char yxlmes[30];
 char zxlmes[30];
@@ -353,8 +356,6 @@ void APP_Initialize(void) {
     
    //initializing other stuff
     SPI1_init();
-    LCD_init();
-    LCD_clearScreen(GREEN);
     initExpander();
     //write to several registers to initialize chip
     writei2c(0x10,0b10000010);  //CTRL1_XL turn on accelerometer, 1.66 kHz 2g, 100Hz
@@ -419,6 +420,8 @@ void APP_Tasks(void) {
                 USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0,
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
+                
+   
 
                 if (appData.readTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID) {
                     appData.state = APP_STATE_ERROR;
@@ -457,8 +460,19 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
-            len = sprintf(dataOut, "%d\r\n", i);
-            i++;
+            for(i=0;i<=100;i++){
+            len1 = sprintf(dataOut, "%d\r\n", i);
+            len2 = sprintf(xxlmes, "%d\r\n", xxl);
+            len3 = sprintf(yxlmes, "%d\r\n", yxl);
+            len4 = sprintf(zxlmes, "%d\r\n", zxl);
+            len5 = sprintf(xgmes, "%d\r\n", xg);
+            len6 = sprintf(ygmes, "%d\r\n", yg);
+            len7 = sprintf(zgmes, "%d\r\n", zg);
+            }
+            
+            
+            
+            
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
