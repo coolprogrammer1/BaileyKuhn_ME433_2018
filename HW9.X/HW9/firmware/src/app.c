@@ -77,6 +77,7 @@ char zxlmes[30];
 #define ADDR 0b1101011
 unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
+int set = 0;
 
 // *****************************************************************************
 /* Application Data
@@ -421,7 +422,9 @@ void APP_Tasks(void) {
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
                 
-   
+                if(appData.readBuffer(0)=='r'){
+                    set = 1;
+                }
 
                 if (appData.readTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID) {
                     appData.state = APP_STATE_ERROR;
@@ -441,7 +444,7 @@ void APP_Tasks(void) {
             /* Check if a character was received or a switch was pressed.
              * The isReadComplete flag gets updated in the CDC event handler. */
 
-            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
+            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 100)) {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
             }
 
@@ -460,15 +463,11 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
-          
-            len1 = sprintf(dataOut, "%d          \r\n", i);
-            len2 = sprintf(xxlmes, "%d\r\n", xxl);
-            len3 = sprintf(yxlmes, "%d\r\n", yxl);
-            len4 = sprintf(zxlmes, "%d\r\n", zxl);
-            len5 = sprintf(xgmes, "%d\r\n", xg);
-            len6 = sprintf(ygmes, "%d\r\n", yg);
-            len7 = sprintf(zgmes, "%d\r\n", zg);
+            if(set == 1){
+            len1 = sprintf(dataOut, "%d    %d    %d    %d    %d    %d    %d  \r\n", i,xxl,yxl,zxl,xg,yg,zg);
             
+            }
+            i++;
             
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
@@ -476,14 +475,11 @@ void APP_Tasks(void) {
                         appData.readBuffer, 1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
             } else {
-                for(i=0;i<=100;i++){
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-               
-                 
+
                 startTime = _CP0_GET_COUNT();
-            }
             }
             
             
