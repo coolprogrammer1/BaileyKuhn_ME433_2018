@@ -461,17 +461,13 @@ void APP_Tasks(void) {
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
             for(i=0;i<=100;i++){
-            len1 = sprintf(dataOut, "%d\r\n", i);
+            len1 = sprintf(dataOut, "%d    \r\n", i);
             len2 = sprintf(xxlmes, "%d\r\n", xxl);
             len3 = sprintf(yxlmes, "%d\r\n", yxl);
             len4 = sprintf(zxlmes, "%d\r\n", zxl);
             len5 = sprintf(xgmes, "%d\r\n", xg);
             len6 = sprintf(ygmes, "%d\r\n", yg);
             len7 = sprintf(zgmes, "%d\r\n", zg);
-            }
-            
-            
-            
             
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
@@ -480,10 +476,16 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
             } else {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle, dataOut, len,
+                        &appData.writeTransferHandle, dataOut, len1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT();
             }
+            }
+            
+            
+            
+            
+            
             break;
 
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:
