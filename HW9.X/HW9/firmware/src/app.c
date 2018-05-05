@@ -63,7 +63,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len1, len2, len3, len4, len5, len6, len7, i = 0;
+int len1, i = 0;
 int startTime = 0;
 
 //define some things
@@ -77,7 +77,7 @@ char zxlmes[30];
 #define ADDR 0b1101011
 unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
-int set = 0;
+int set = 1;
 
 // *****************************************************************************
 /* Application Data
@@ -463,12 +463,12 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
             
+            if(set==1){
+                for(i=0;i<100;i++) {
             readi2c_multiple(ADDR, 0x20,b,14);
             len1 = sprintf(dataOut, "%d    %d    %d    %d    %d    %d    %d  \r\n", i,xxl,yxl,zxl,xg,yg,zg);
-            set = 0;
-            
-            i++;
-            
+           
+                
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
@@ -482,8 +482,9 @@ void APP_Tasks(void) {
                 startTime = _CP0_GET_COUNT();
             }
             
-            
-            
+            }
+            }
+           
             
             
             
