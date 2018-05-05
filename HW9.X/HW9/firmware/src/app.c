@@ -422,7 +422,7 @@ void APP_Tasks(void) {
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
                 
-                if(appData.readBuffer(0)=='r'){
+                if(appData.readBuffer[0]=='r'){
                     set = 1;
                 }
 
@@ -462,11 +462,11 @@ void APP_Tasks(void) {
             appData.writeTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
-
-            if(set == 1){
+            
+            readi2c_multiple(ADDR, 0x20,b,14);
             len1 = sprintf(dataOut, "%d    %d    %d    %d    %d    %d    %d  \r\n", i,xxl,yxl,zxl,xg,yg,zg);
             set = 0;
-            }
+            
             i++;
             
             if (appData.isReadComplete) {
