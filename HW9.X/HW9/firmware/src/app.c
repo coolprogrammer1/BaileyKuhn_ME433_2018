@@ -77,7 +77,7 @@ char zxlmes[30];
 #define ADDR 0b1101011
 unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
-int set = 1;
+int set = 0;
 
 // *****************************************************************************
 /* Application Data
@@ -424,6 +424,7 @@ void APP_Tasks(void) {
                 
                 if(appData.readBuffer[0]=='r'){
                     set = 1;
+                    i=0;
                 }
 
                 if (appData.readTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID) {
@@ -463,10 +464,11 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
             
+            /*
             if(set==1){
                 for(i=0;i<100;i++) {
             readi2c_multiple(ADDR, 0x20,b,14);
-            len1 = sprintf(dataOut, "%d    %d    %d    %d    %d    %d    %d  \r\n", i,xxl,yxl,zxl,xg,yg,zg);
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       %d       %d       \r\n", i,xxl,yxl,zxl,xg,yg,zg);
            
                 
             if (appData.isReadComplete) {
@@ -483,6 +485,54 @@ void APP_Tasks(void) {
             }
             
             }
+                set = 0;
+                
+                if (appData.isReadComplete) {
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle,
+                        appData.readBuffer, 1,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+            } else {
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle, dataOut, len1,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+
+                startTime = _CP0_GET_COUNT();
+            }
+            }
+            */
+            
+            
+            readi2c_multiple(ADDR, 0x20,b,14);
+            
+            if (appData.isReadComplete) {
+                ;
+            }
+            
+            if(set==1 && i<100){
+              
+           
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       %d       %d       \r\n", i,xxl,yxl,zxl,xg,yg,zg);
+   
+            
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle, dataOut, len1,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+
+                startTime = _CP0_GET_COUNT();
+            
+            
+            }
+            
+            else {
+                dataOut[0]=0;
+                len1 = 1;
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle, dataOut, len1,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+
+                //startTime = _CP0_GET_COUNT();
+            
             }
            
             
