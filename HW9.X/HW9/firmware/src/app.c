@@ -518,10 +518,10 @@ void APP_Tasks(void) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-
+                i++;
                 startTime = _CP0_GET_COUNT();
             
-            
+                
             }
             
             else {
