@@ -78,7 +78,11 @@ char zxlmes[30];
 unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
 int set = 0;
-
+int ii = 0;
+int j = 0;
+int avg = 4;
+int rawData[100];
+float MAFfilteredData[100];
 // *****************************************************************************
 /* Application Data
   Summary:
@@ -463,62 +467,42 @@ void APP_Tasks(void) {
             appData.writeTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
-            
-            /*
-            if(set==1){
-                for(i=0;i<100;i++) {
-            readi2c_multiple(ADDR, 0x20,b,14);
-            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       %d       %d       \r\n", i,xxl,yxl,zxl,xg,yg,zg);
-           
-                
-            if (appData.isReadComplete) {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-            } else {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle, dataOut, len1,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
 
-                startTime = _CP0_GET_COUNT();
-            }
-            
-            }
-                set = 0;
-                
-                if (appData.isReadComplete) {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-            } else {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle, dataOut, len1,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-
-                startTime = _CP0_GET_COUNT();
-            }
-            }
-            */
-            
             
             readi2c_multiple(ADDR, 0x20,b,14);
+            //MAF filter 
+            
+            for(ii=0;ii<=100;ii++){ //set all values of rawData = 0
+                rawData[i]=0;
+            }
+            
+            rawData[i]= zxl;
+            
+            for(j=3;j==6;j++){
+            MAFfilteredData[i] = (rawData[j-3]+rawData[j-2]+rawData[j-1]+rawData[j])/avg;
+            }
+            j++;
+            //FIR
+            //IIR
+            
+            
             
             if (appData.isReadComplete) {
                 ;
             }
             
             if(set==1 && i<100){
-              
+            
+
            
-            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       %d       %d       \r\n", i,xxl,yxl,zxl,xg,yg,zg);
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl/*,MAFfilteredData[i]*/);
    
             
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 i++;
+               
                 startTime = _CP0_GET_COUNT();
             
                 
