@@ -86,6 +86,8 @@ float MAFfilteredData[100];
 float FIRfilteredData[100];
 float IIRfilteredData[100];
 int buffer[8];
+float A = 0.8;
+float B = 0.2;
 //Bvec Vector from MATLAB
 
 // *****************************************************************************
@@ -494,7 +496,6 @@ void APP_Tasks(void) {
             rawData[i]=zxl;
             for(k=0;k<=7;k++){
                 if(k==0){
-
                     buffer[0] = rawData[i];
                     FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
@@ -558,7 +559,7 @@ void APP_Tasks(void) {
                     
             
             //IIR
-            
+            IIRfilteredData[i]=A*IIRfilteredData[i-1]+B*rawData[i];
             
             
             if (appData.isReadComplete) {
