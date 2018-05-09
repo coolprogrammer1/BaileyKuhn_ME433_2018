@@ -79,10 +79,15 @@ unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
 int set = 0;
 int ii = 0;
-int j = 0;
+int j,k = 0;
 int avg = 4;
 int rawData[100];
 float MAFfilteredData[100];
+float FIRfilteredData[100];
+float IIRfilteredData[100];
+int buffer[8];
+//Bvec Vector from MATLAB
+
 // *****************************************************************************
 /* Application Data
   Summary:
@@ -470,19 +475,88 @@ void APP_Tasks(void) {
 
             
             readi2c_multiple(ADDR, 0x20,b,14);
+            
             //MAF filter 
             
             for(ii=0;ii<=100;ii++){ //set all values of rawData = 0
-                rawData[i]=0;
+                rawData[ii]=0;
+                MAFfilteredData[ii]=0;
             }
+            rawData[i]=zxl;
             
-            rawData[i]= zxl;
-            
-            for(j=3;j==6;j++){
-            MAFfilteredData[i] = (rawData[j-3]+rawData[j-2]+rawData[j-1]+rawData[j])/avg;
+            if(j=3 && j<=6){
+            MAFfilteredData[i] = (rawData[i-3]+rawData[i-2]+rawData[i-1]+rawData[i])/avg;
+            j=0;
             }
             j++;
+            
             //FIR
+            rawData[i]=zxl;
+            for(k=0;k<=7;k++){
+                if(k==0){
+
+                    buffer[0] = rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==1){
+                    buffer[k-1]=buffer[k];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==2){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==3){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[k-3]=buffer[k-2];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==4){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[k-3]=buffer[k-2];
+                    buffer[k-4]=buffer[k-3];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==5){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[k-3]=buffer[k-2];
+                    buffer[k-4]=buffer[k-3];
+                    buffer[k-5]=buffer[k-4];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==6){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[k-3]=buffer[k-2];
+                    buffer[k-4]=buffer[k-3];
+                    buffer[k-5]=buffer[k-4];
+                    buffer[k-6]=buffer[k-5];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                if(k==7){
+                    buffer[k-1]=buffer[k];
+                    buffer[k-2]=buffer[k-1];
+                    buffer[k-3]=buffer[k-2];
+                    buffer[k-4]=buffer[k-3];
+                    buffer[k-5]=buffer[k-4];
+                    buffer[k-6]=buffer[k-5];
+                    buffer[k-7]=buffer[k-6];
+                    buffer[0]=rawData[i];
+                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                }
+                }
+                    
+            
             //IIR
             
             
@@ -493,9 +567,7 @@ void APP_Tasks(void) {
             
             if(set==1 && i<100){
             
-
-           
-            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl/*,MAFfilteredData[i]*/);
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl,MAFfilteredData[i],j);
    
             
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
@@ -504,8 +576,7 @@ void APP_Tasks(void) {
                 i++;
                
                 startTime = _CP0_GET_COUNT();
-            
-                
+        
             }
             
             else {
