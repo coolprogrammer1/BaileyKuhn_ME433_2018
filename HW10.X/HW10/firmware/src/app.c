@@ -486,20 +486,27 @@ void APP_Tasks(void) {
             }
             rawData[i]=zxl;
             
-            if(j=3 && j<=6){
-            MAFfilteredData[i] = (rawData[i-3]+rawData[i-2]+rawData[i-1]+rawData[i])/avg;
-            j=0;
+            if(i==0){
+            MAFfilteredData[i] = (rawData[i])/avg;
             }
-            j++;
+            else if(i==1){
+            MAFfilteredData[i] = (rawData[i-1]+rawData[i])/2;
+            }
+            else if(i==2){
+            MAFfilteredData[i] = (rawData[i-2]+rawData[i-1]+rawData[i])/3;
+            }
+            else{
+            MAFfilteredData[i] = (rawData[i-3]+rawData[i-2]+rawData[i-1]+rawData[i])/4;
+            }
+            
             
             //FIR
-            rawData[i]=zxl;
             for(k=0;k<=7;k++){
                 if(k==0){
                     buffer[0] = rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==1){
+                else if(k==1){
                     buffer[k-1]=buffer[k];
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
@@ -510,14 +517,14 @@ void APP_Tasks(void) {
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==3){
+                else if(k==3){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==4){
+                else if(k==4){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
@@ -525,7 +532,7 @@ void APP_Tasks(void) {
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==5){
+                else if(k==5){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
@@ -534,7 +541,7 @@ void APP_Tasks(void) {
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==6){
+                else if(k==6){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
@@ -544,7 +551,7 @@ void APP_Tasks(void) {
                     buffer[0]=rawData[i];
                     //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
-                if(k==7){
+                else {
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
@@ -562,7 +569,7 @@ void APP_Tasks(void) {
             if(i==0){
                 IIRfilteredData[i]=rawData[i];
             }
-            if(i>0){
+            else{
                 IIRfilteredData[i]=A*IIRfilteredData[i-1]+B*rawData[i];
             }
             
