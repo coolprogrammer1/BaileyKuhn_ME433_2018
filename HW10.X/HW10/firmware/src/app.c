@@ -497,25 +497,25 @@ void APP_Tasks(void) {
             for(k=0;k<=7;k++){
                 if(k==0){
                     buffer[0] = rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==1){
                     buffer[k-1]=buffer[k];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==2){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==3){
                     buffer[k-1]=buffer[k];
                     buffer[k-2]=buffer[k-1];
                     buffer[k-3]=buffer[k-2];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==4){
                     buffer[k-1]=buffer[k];
@@ -523,7 +523,7 @@ void APP_Tasks(void) {
                     buffer[k-3]=buffer[k-2];
                     buffer[k-4]=buffer[k-3];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==5){
                     buffer[k-1]=buffer[k];
@@ -532,7 +532,7 @@ void APP_Tasks(void) {
                     buffer[k-4]=buffer[k-3];
                     buffer[k-5]=buffer[k-4];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==6){
                     buffer[k-1]=buffer[k];
@@ -542,7 +542,7 @@ void APP_Tasks(void) {
                     buffer[k-5]=buffer[k-4];
                     buffer[k-6]=buffer[k-5];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 if(k==7){
                     buffer[k-1]=buffer[k];
@@ -553,22 +553,28 @@ void APP_Tasks(void) {
                     buffer[k-6]=buffer[k-5];
                     buffer[k-7]=buffer[k-6];
                     buffer[0]=rawData[i];
-                    FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
+                    //FIRfilteredData[i]=rawData[0]*Bvec[0]+rawData[1]*Bvec[1]+rawData[2]*Bvec[2]+rawData[3]*Bvec[3]+rawData[4]*Bvec[4]+rawData[5]*Bvec[5]+rawData[6]*Bvec[6]+rawData[7]*Bvec[7];
                 }
                 }
                     
             
             //IIR
-            IIRfilteredData[i]=A*IIRfilteredData[i-1]+B*rawData[i];
+            if(i==0){
+                IIRfilteredData[i]=rawData[i];
+            }
+            if(i>0){
+                IIRfilteredData[i]=A*IIRfilteredData[i-1]+B*rawData[i];
+            }
             
             
+            //other loop
             if (appData.isReadComplete) {
                 ;
             }
             
             if(set==1 && i<100){
             
-            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl,MAFfilteredData[i],j);
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl);
    
             
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
