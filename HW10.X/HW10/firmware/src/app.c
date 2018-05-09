@@ -79,16 +79,17 @@ unsigned char b[14];
 signed short temp,xg, yg, zg, xxl, yxl, zxl, xxl2,yxl2,zxl2;
 int set = 0;
 int ii = 0;
-int j,k = 0;
+int k = 0;
 int avg = 4;
-int rawData[100];
+float rawData[100];
 float MAFfilteredData[100];
 float FIRfilteredData[100];
 float IIRfilteredData[100];
-int buffer[8];
+float buffer[8];
 float A = 0.8;
 float B = 0.2;
-float Bvec[8] = {0.1,0.1,0.1,0.1,0.1, 0.1,0.1,0.1};
+// float Bvec[8] = { 0.0144,0.0439,0.1202,0.2025,0.2380,0.2025,0.1202,0.0439,0.0144}; 0.1
+ float Bvec[8] = {0.0181,0.0488,0.1227,0.1967,0.2274,0.1967,0.1227,0.0488,0.0181}; //0.01
 
 
 
@@ -507,7 +508,7 @@ void APP_Tasks(void) {
 
             
             //FIR
-            if(k<=7){
+            
                 if(k==0){
                     buffer[0] = rawData[i];
                     FIRfilteredData[i]=buffer[0]*Bvec[0]+buffer[1]*Bvec[1]+buffer[2]*Bvec[2]+buffer[3]*Bvec[3]+buffer[4]*Bvec[4]+buffer[5]*Bvec[5]+buffer[6]*Bvec[6]+buffer[7]*Bvec[7];
@@ -569,7 +570,7 @@ void APP_Tasks(void) {
                     FIRfilteredData[i]=buffer[0]*Bvec[0]+buffer[1]*Bvec[1]+buffer[2]*Bvec[2]+buffer[3]*Bvec[3]+buffer[4]*Bvec[4]+buffer[5]*Bvec[5]+buffer[6]*Bvec[6]+buffer[7]*Bvec[7];
                 }
 
-                }
+                
             k++;
             
             if(k>7){
@@ -592,7 +593,7 @@ void APP_Tasks(void) {
             
             if(set==1 && i<100){
             
-            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i,zxl, MAFfilteredData[i],FIRfilteredData[i],IIRfilteredData[i]);
+            len1 = sprintf(dataOut, "%d       %d       %d       %d       %d       \r\n", i, rawData[i], MAFfilteredData[i],FIRfilteredData[i],IIRfilteredData[i]);
    
             
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
