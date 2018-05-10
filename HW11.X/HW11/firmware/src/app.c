@@ -356,8 +356,10 @@ void APP_Tasks(void) {
             if (movement_length > 50) {
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) dir_table[vector & 0x07];
-                appData.yCoordinate = (int8_t) dir_table[(vector + 2) & 0x07];
+                appData.xCoordinate = (int8_t) 1;
+                appData.yCoordinate = (int8_t) 1;
+                //appData.xCoordinate = (int8_t) dir_table[vector & 0x07];
+                //appData.yCoordinate = (int8_t) dir_table[(vector + 2) & 0x07];
                 vector++;
                 movement_length = 0;
             }
