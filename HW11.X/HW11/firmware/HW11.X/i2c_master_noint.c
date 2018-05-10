@@ -111,7 +111,8 @@ unsigned char readi2c_multiple(unsigned char address, unsigned char reg, unsigne
     yxl = b[10] | (b[11] << 8);
     zxl = b[12] | (b[13] << 8);
     
-    xxl2 = -1.0*((xxl)/16000.0)*60.0;
+    
+    xxl2 = -1*((xxl)/1000.0);
     yxl2 = ((yxl)/16000.0)*60.0;
-    zxl2 = ((zxl)/16000.0)*60.0;
+    zxl2 = ((zxl)/1000.0);
 }
