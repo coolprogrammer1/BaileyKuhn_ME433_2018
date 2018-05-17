@@ -42,6 +42,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     TextView myTextView;
     int progressChanged = 0;
 
+
     static long prevtime = 0; // for FPS calculation
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,26 +140,28 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             int thresh = progressChanged; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             int startY = 200; // which row in the bitmap to analyze to read
-            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
-            // in the row, see if there is more green than red
-            for (int j = startY; j <= startY+5 && j<440;j++){
+
+            //check multiple rows
+            for (int j = 120; j <= 400;j++) {
+                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+                // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++) {
                     if ((green(pixels[i]) - red(pixels[i])) > thresh) {
                         pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
                     }
                 }
 
-            // update the row
-            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
-            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+1, bmp.getWidth(),1);
-            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+2, bmp.getWidth(),1);
-            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+3, bmp.getWidth(),1);
-            bmp.setPixels(pixels,0,bmp.getWidth(),0,startY+4,bmp.getWidth(),1);
-            bmp.setPixels(pixels,0,bmp.getWidth(),0,startY+5,bmp.getWidth(),1);
+                // update the row
+                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+                //bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY + 1, bmp.getWidth(), 1);
+                //bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY + 2, bmp.getWidth(), 1);
+                //bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY + 3, bmp.getWidth(), 1);
+                //bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY + 4, bmp.getWidth(), 1);
+                //bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY + 5, bmp.getWidth(), 1);
 
-           startY = startY +6;
-        }
+
+            }
         }
 
         // draw a circle at some position
