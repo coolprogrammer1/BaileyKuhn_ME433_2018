@@ -142,7 +142,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
             // in the row, see if there is more green than red
-            for (int j = startY; j <= startY + 5; j++){
+            for (int j = startY; j <= startY+5 && j<440;j++){
                 for (int i = 0; i < bmp.getWidth(); i++) {
                     if ((green(pixels[i]) - red(pixels[i])) > thresh) {
                         pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
@@ -151,13 +151,14 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
             // update the row
             bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY+1, bmp.getWidth(), 1);
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY+2, bmp.getWidth(), 1);
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY+3, bmp.getWidth(), 1);
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY+4, bmp.getWidth(), 1);
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY+5, bmp.getWidth(), 1);
+            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+1, bmp.getWidth(),1);
+            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+2, bmp.getWidth(),1);
+            bmp.setPixels(pixels,0, bmp.getWidth(),0,startY+3, bmp.getWidth(),1);
+            bmp.setPixels(pixels,0,bmp.getWidth(),0,startY+4,bmp.getWidth(),1);
+            bmp.setPixels(pixels,0,bmp.getWidth(),0,startY+5,bmp.getWidth(),1);
+
+           startY = startY +6;
         }
-        startY = startY+6;
         }
 
         // draw a circle at some position
