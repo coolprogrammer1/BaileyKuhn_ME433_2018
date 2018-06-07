@@ -69,6 +69,11 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
+void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
+  // code for PI control goes here
+
+  IFS0bits.T4IF = 0; // clear interrupt flag, last line
+}
  
 void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 {
