@@ -1,28 +1,45 @@
-package com.example.bailey.imageproc;
-
-// libraries
+package com.example.bailey.techcup;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
-import android.os.Bundle;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
+import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
+import com.hoho.android.usbserial.driver.ProbeTable;
+import com.hoho.android.usbserial.driver.UsbSerialDriver;
+import com.hoho.android.usbserial.driver.UsbSerialPort;
+import com.hoho.android.usbserial.driver.UsbSerialProber;
+import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -30,36 +47,45 @@ import static android.graphics.Color.red;
 import static android.graphics.Color.rgb;
 
 public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
+
+    SeekBar myControl;
+    TextView myTextView;
+    Button button;
+    TextView myTextView2;
+    ScrollView myScrollView;
+    TextView myTextView3;
+    SeekBar myControlR;
+    SeekBar myControlT;
+    TextView myTextViewR;
+    TextView myTextViewT;
+    int progressChanged = 0;
+    int S = 0;
+    int T = 0;
     private Camera mCamera;
+    private TextView mTextView;
     private TextureView mTextureView;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
     private Bitmap bmp = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
-    private TextView mTextView;
-    SeekBar myControl;
-    SeekBar myControlR;
-    SeekBar myControlT;
-    TextView myTextViewR;
-    TextView myTextView;
-    TextView myTextViewT;
-    int progressChanged = 0;
-    int S = 0;
-    int T = 0;
-
+    private UsbManager manager;
+    private UsbSerialPort sPort;
+    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private SerialInputOutputManager mSerialIoManager;
 
     static long prevtime = 0; // for FPS calculation
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
 
         // see if the app has permission to use the camera
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+        //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
@@ -75,6 +101,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         } else {
             mTextView.setText("no camera permissions");
         }
+
         myControl = (SeekBar) findViewById(R.id.seek1);
         myControlR = (SeekBar) findViewById(R.id.seek2);
         myControlT = (SeekBar) findViewById(R.id.seek3);
@@ -89,11 +116,21 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         setMyControlListener();
         setMyControlListener2();
         setMyControlListener3();
-    }
 
+        myTextView2 = (TextView) findViewById(R.id.textView02);
+        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
+        myTextView3 = (TextView) findViewById(R.id.textView04);
+
+
+        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+
+    }
 
     private void setMyControlListener() {
         myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -152,14 +189,121 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         });
     }
 
+    private final SerialInputOutputManager.Listener mListener =
+            new SerialInputOutputManager.Listener() {
+                @Override
+                public void onRunError(Exception e) {
 
+                }
 
+                @Override
+                public void onNewData(final byte[] data) {
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.this.updateReceivedData(data);
+                        }
+                    });
+                }
+            };
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        stopIoManager();
+        if(sPort != null){
+            try{
+                sPort.close();
+            } catch (IOException e){ }
+            sPort = null;
+        }
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ProbeTable customTable = new ProbeTable();
+        customTable.addProduct(0x04D8,0x000A, CdcAcmSerialDriver.class);
+        UsbSerialProber prober = new UsbSerialProber(customTable);
+
+        final List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
+
+        if(availableDrivers.isEmpty()) {
+            //check
+            return;
+        }
+
+        UsbSerialDriver driver = availableDrivers.get(0);
+        sPort = driver.getPorts().get(0);
+
+        if (sPort == null){
+            //check
+        }else{
+            final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+            UsbDeviceConnection connection = usbManager.openDevice(driver.getDevice());
+            if (connection == null){
+                //check
+                PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent("com.android.example.USB_PERMISSION"), 0);
+                usbManager.requestPermission(driver.getDevice(), pi);
+                return;
+            }
+
+            try {
+                sPort.open(connection);
+                sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+
+            }catch (IOException e) {
+                //check
+                try{
+                    sPort.close();
+                } catch (IOException e1) { }
+                sPort = null;
+                return;
+            }
+        }
+        onDeviceStateChange();
+    }
+
+    private void stopIoManager(){
+        if(mSerialIoManager != null) {
+            mSerialIoManager.stop();
+            mSerialIoManager = null;
+        }
+    }
+
+    private void startIoManager() {
+        if(sPort != null){
+            mSerialIoManager = new SerialInputOutputManager(sPort, mListener);
+            mExecutor.submit(mSerialIoManager);
+        }
+    }
+
+    private void onDeviceStateChange(){
+        stopIoManager();
+        startIoManager();
+    }
+
+    private void updateReceivedData(byte[] data) {
+        //do something with received data
+
+        //for displaying:
+        String rxString = null;
+        try {
+            rxString = new String(data, "UTF-8"); // put the data you got into a string
+            myTextView3.append(rxString);
+            //myScrollView.fullScroll(View.FOCUS_DOWN);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        mCamera = Camera.open();
-        Camera.Parameters parameters = mCamera.getParameters();
+        mCamera = android.hardware.Camera.open();
+        android.hardware.Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(640, 480);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
+        parameters.setFocusMode(android.hardware.Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
         parameters.setAutoExposureLock(true); // keep the white balance constant
         mCamera.setParameters(parameters);
         mCamera.setDisplayOrientation(90); // rotate to portrait mode
@@ -225,6 +369,10 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 COM = bmp.getWidth()/2;
             }
 
+            String sendString = String.valueOf(COM) + '\n';
+            try {
+                sPort.write(sendString.getBytes(), 10); // 10 is the timeout
+            } catch (IOException e) { }
 
             //draw circle where center of track is
             int pos = COM;
@@ -243,4 +391,5 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         }
     }
+
 }

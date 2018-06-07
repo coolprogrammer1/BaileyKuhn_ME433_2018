@@ -64,7 +64,10 @@ char rx[64]; // the raw data
 int rxPos = 0; // how much data has been stored
 int gotRx = 0; // the flag
 int rxVal = 0; // a place to store the int that was received
-
+#define MAX_DUTY 100
+#define kp 100
+ int left =0;
+ int right =0;
 // *****************************************************************************
 /* Application Data
   Summary:
@@ -333,7 +336,23 @@ void APP_Initialize(void) {
     appData.readBuffer = &readBuffer[0];
 
     /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
-
+    
+    TRISAbits.TRISA0 = 0; //make output for motor 1
+    TRISBbits.TRISB13 = 0; //make output for motor 2
+    
+    LATAbits.LATA0 = 1; //set high
+    LATBbits.LATB13 = 1; //set high 
+    
+    T3CONbits.ON = 0; //timer 3 off 
+        T3CONbits.TCKPS = 0; //prescale 1
+        PR3 = 47999;  //ikHz freq 
+        T3CONbits.ON = 1; //timer 3 on
+        
+     T2CONbits.ON = 0; //timer 2 off 
+        T2CONbits.TCKPS = 0; //prescale 1
+        PR2 = 47999;  //ikHz freq 
+        T2CONbits.ON = 1; //timer 2 on
+    
     startTime = _CP0_GET_COUNT();
 }
 
@@ -475,6 +494,30 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT();
             }
+            
+            //P CONTROLLER
+           
+
+             int error = rxVal - 240; // 240 means the dot is in the middle of the screen
+                    if (error<0) { // slow down the left motor to steer to the left
+                        error  = -error;
+                        left = MAX_DUTY - kp*error;
+                        right = MAX_DUTY;
+                        if (left < 0){
+                            left = 0;
+                        }
+                    }
+                    else { // slow down the right motor to steer to the right
+                        right = MAX_DUTY - kp*error;
+                        left = MAX_DUTY;
+                        if (right<0) {
+                            right = 0;
+                        }
+                    }
+                    OC1RS = left;
+                    OC4RS = right;
+            
+            
             break;
 
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:
