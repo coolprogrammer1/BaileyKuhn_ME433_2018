@@ -59,8 +59,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     TextView myTextViewR;
     TextView myTextViewT;
     int progressChanged = 0;
-    int S = 0;
-    int T = 0;
+    int S = 20;
+    int T = 10;
     private Camera mCamera;
     private TextView mTextView;
     private TextureView mTextureView;
@@ -335,10 +335,11 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         if (c != null) {
             int thresh = 0; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
-            int startY = 200; // which row in the bitmap to analyze to read
-            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            int startY1 = 200; // which row in the bitmap to analyze to read
+            int startY2 = 250;
+            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY1, bmp.getWidth(), 1);
 
-            // in the row, see if there is more green than red
+            // in the first row, see if there is more green than red
             for (int i = 0; i < bmp.getWidth(); i++) {
                 if ((green(pixels[i]) - red(pixels[i])) > thresh) {
                     pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
@@ -346,7 +347,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             }
 
             // update the row
-            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY1, bmp.getWidth(), 1);
 
 
             int sum_mr = 0; // the sum of the mass times the radius
@@ -361,21 +362,57 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
             }
 
-            int COM = 0;
+            int COM1 = 0;
+            int COM2 = 0;
+            int COMavg = 0;
             // only use the data if there were a few pixels identified, otherwise you might get a divide by 0 error
-            if (sum_m > 0) {
-                COM = sum_mr / sum_m;
+            if (sum_m > 5) {
+                COM1 = sum_mr / sum_m;
             } else {
-                COM = bmp.getWidth()/2;
+                COM1 = bmp.getWidth()/2;
             }
 
-            String sendString = String.valueOf(COM) + '\n';
+            // in the second row, see if there is more green than red
+            for (int i = 0; i < bmp.getWidth(); i++) {
+                if ((green(pixels[i]) - red(pixels[i])) > thresh) {
+                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                }
+            }
+
+            // update the row
+            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY2, bmp.getWidth(), 1);
+
+
+            int sum_mr2 = 0; // the sum of the mass times the radius
+            int sum_m2 = 0; // the sum of the masses
+            for (int i = 0; i < bmp.getWidth(); i++) {
+                if (((red(pixels[i]) - (green(pixels[i]) + blue(pixels[i])) / 2) > -S) && (red(pixels[i]) - ((green(pixels[i]) + blue(pixels[i])) / 2) < S) && (red(pixels[i]) > T)) {
+                    pixels[i] = rgb(1, 1, 1); // set the pixel to almost 100% black
+
+                    sum_m2 = sum_m2 + green(pixels[i]) + red(pixels[i]) + blue(pixels[i]);
+                    sum_mr2 = sum_mr2 + (green(pixels[i]) + red(pixels[i]) + blue(pixels[i])) * i;
+                }
+
+            }
+
+            // only use the data if there were a few pixels identified, otherwise you might get a divide by 0 error
+            if (sum_m2 > 5) {
+                COM2 = sum_mr2 / sum_m2;
+            } else {
+                COM2 = bmp.getWidth()/2;
+            }
+
+            COMavg = (COM1+COM2)/2;
+
+
+
+            String sendString = String.valueOf(COMavg) + '\n';
             try {
                 sPort.write(sendString.getBytes(), 10); // 10 is the timeout
             } catch (IOException e) { }
 
             //draw circle where center of track is
-            int pos = COM;
+            int pos = COMavg;
             canvas.drawCircle(pos, 240, 5, paint1); // x position, y position, diameter, color
 
             // write the pos as text
