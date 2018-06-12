@@ -64,10 +64,8 @@ char rx[64]; // the raw data
 int rxPos = 0; // how much data has been stored
 int gotRx = 0; // the flag
 int rxVal = 0; // a place to store the int that was received
-#define MAX_DUTY 100
 #define kp 100
- int left =0;
- int right =0;
+float error =0;
 // *****************************************************************************
 /* Application Data
   Summary:
@@ -356,11 +354,11 @@ void APP_Initialize(void) {
     OC1CONbits.ON = 1; // turn on OC1
     OC4CONbits.ON = 1; // turn on OC4
         
-  //Initialize B8 and B9 for timers
+  //Initialize B8 and B9 for timers 3/5 reading motor speed
     //T5CKbits.T5CKR = 0b0100; // B9 is read by T5CK
     //T3CKbits.T3CKR = 0b0100; // B8 is read by T3CK
-    T5CKR = 0b0100; // B9 is read by T5CK
-    T3CKR = 0b0100; // B8 is read by T3CK
+    T5CKRbits.T5CKR = 0b0100; // B9 is read by T5CK
+    T3CKRbits.T3CKR = 0b0100; // B8 is read by T3CK
   
   //Configure TIMR 3 and 5 to count external pulses 
     T5CONbits.TCS = 1; // count external pulses
@@ -514,6 +512,7 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 rxPos = 0;
                 gotRx = 0;
+                
             } else {
                 len = sprintf(dataOut, "%d\r\n", i);
                 i++;
@@ -522,30 +521,63 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT();
             }
+              
             
-            //P CONTROLLER
-           
-
-             int error = rxVal - 240; // 240 means the dot is in the middle of the screen
-                    if (error<0) { // slow down the left motor to steer to the left
-                        error  = -error;
-                        left = MAX_DUTY - kp*error;
+            
+            //Controller based on COM
+            error = rxVal - 320; // 240 means the dot is in the middle of the screen
+            /*        
+            if (error == -320){
+                        left = MAX_DUTY;
                         right = MAX_DUTY;
+                    }
+            
+                    else if (error > -5 && error < 5){
+                        left = MAX_DUTY;
+                        right = MAX_DUTY;
+                    }
+            */
+                
+            
+            if (error==0) { // slow down the left motor to steer to the left
+                   
+                        //left = MAX_DUTY - kp*error;
+                    right = MAX_DUTYR;
+                    left = MAX_DUTYL;
+                        /*
                         if (left < 0){
                             left = 0;
                         }
-                    }
-                    else { // slow down the right motor to steer to the right
-                        right = MAX_DUTY - kp*error;
-                        left = MAX_DUTY;
+                        */
+            }
+            
+            else if (error<0) { // slow down the left motor to steer to the left
+                    error  = -error;
+                        //left = MAX_DUTY - kp*error;
+                    right = MAX_DUTYR;
+                    left = 0;
+                        /*
+                        if (left < 0){
+                            left = 0;
+                        }
+                        */
+            }
+                
+            else { // slow down the right motor to steer to the right
+                        
+                        //right = MAX_DUTY - kp*error;
+                    right = 0;
+                    left = MAX_DUTYL;
+                        /*
                         if (right<0) {
                             right = 0;
                         }
-                    }
+                         */
+            }
+            
                     OC1RS = left;
                     OC4RS = right;
-            
-            
+
             break;
 
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:

@@ -60,6 +60,10 @@ extern "C" {
 #endif
 // DOM-IGNORE-END 
 
+    int left;
+    int right;
+    #define MAX_DUTYR 750
+    #define MAX_DUTYL 850
 // *****************************************************************************
 // *****************************************************************************
 // Section: Type Definitions

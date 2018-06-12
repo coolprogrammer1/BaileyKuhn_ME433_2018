@@ -62,12 +62,12 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system/common/sys_common.h"
 #include "app.h"
 #include "system_definitions.h"
-#define INTMAX 100
 
-int dif3 = 0,dif3int = 0, dif3prev = 0, u=0;
-int dif5 = 0,dif5int = 0, dif5prev = 0, u=0;
-int kpm = 0, kim = 0;
-
+//float RightWheel, LeftWheel;
+float kiR, kpR, kiL, kpL;
+float outRight, outLeft;
+float RightWheel, LeftWheel;
+float RightWheelD, LeftWheelD;
 // *****************************************************************************
 // *****************************************************************************
 // Section: System Interrupt Vector Functions
@@ -76,40 +76,52 @@ int kpm = 0, kim = 0;
 
 void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
   // code for PI control goes here
-    //find difference between timer times
+    /*
+    //find wheel velocity 
+    RightWheelD = (5*1000000)*right + 1*1000000000; 
+    LeftWheelD = (5*1000000)*left + 1*1000000000; 
+    RightWheel = TMR3;  //rev/s 
+    LeftWheel = TMR5; //rev/s        
     
-    int old_time3 = real_time3;
-    int real_time3 = TMR3;
- 
-    int old_time5 = real_time5;
-    int real_time5 = TMR5;
+    //set variables such that they are only declared once 
+    static float intRight = 0;
+    static float intLeft = 0;
+    static float errorRight = 0;
+    static float errorLeft = 0;             
     
-    int dif3 = real_time3 - old_time3;
-    int dif5 = real_time5 - old_time5;
+    //PI controller
+    errorRight = RightWheel - RightWheelD; //difference between actual and desired
+    intRight = intRight + (errorRight*RightWheel); //integral value
+    outRight = (kpR * errorRight + kiR * intRight)/100.0; //set output based on gains
     
-    //
-    dif3int = dif3+dif3int;
-    dif5int = dif3+dif3int;
+    errorLeft = LeftWheel - LeftWheelD; //difference between actual and desired
+    intLeft = intLeft + (errorLeft*LeftWheel); //integral
+    outLeft = (kpL * errorLeft + kiL * intLeft)/100.0; //set output based on gains
     
-    //controller
-    if(dif3 > INTMAX){
-        dif3int = INTMAX;
+    if(outRight > 1){ //cap output 
+        outRight = 1;
+    }
+    else if(outRight < -1){
+        outRight = -1;
     }
     
-    else{
-        dif3int = -INTMAX;
+    if(outLeft > 1){ //cap output 
+        outLeft = 1;
+    }
+    else if(outLeft < -1){
+        outLeft = -1;
     }
     
-    u = kpm*dif3+kim*dif3int;
     
-    
-    
-    dif3prev = dif3;
-    
-    
+    OC1RS = outLeft*MAX_DUTY; //set OC1RS right wheel
+    OC4RS = outRight*MAX_DUTY; //set OC4RS left wheel  
+   
+    TMR3 = 0;  //set timer 3 = 0
+    TMR5 = 0;  //set timer 5 = 0
+    */
   IFS0bits.T4IF = 0; // clear interrupt flag, last line
 }
- 
+
 void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 {
     DRV_USBFS_Tasks_ISR(sysObj.drvUSBObject);
